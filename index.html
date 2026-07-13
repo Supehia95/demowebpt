@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebPT Gen 3 — Support Hub Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1f2933;
+    --navy-soft:#3b4a58;
+    --blue:#5383fe;
+    --blue-dark:#3f68e0;
+    --purple:#7a5bf7;
+    --coral:#fc5c6f;
+    --bg:#f4f6fb;
+    --card:#ffffff;
+    --border:#e3e7ef;
+    --muted:#6b7686;
+    --good:#1f9d6f;
+    --good-bg:#e7f7f0;
+    --warn:#b8830a;
+    --warn-bg:#fdf3e0;
+    --bad:#d6425a;
+    --bad-bg:#fde9ec;
+    --radius:14px;
+    --shadow: 0 1px 2px rgba(31,41,51,.04), 0 8px 24px rgba(31,41,51,.06);
+    --grad: linear-gradient(135deg, var(--blue), var(--purple));
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--navy);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4,.display{font-family:'Sora',sans-serif;}
+  button{font-family:inherit;}
+  a{color:var(--blue);}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:#d3d9e4;border-radius:8px;}
+
+  /* ---------- utility ---------- */
+  .hidden{display:none !important;}
+  .btn{
+    border:none;border-radius:10px;padding:10px 18px;font-weight:600;font-size:14px;
+    cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s transform,.15s box-shadow,.15s background;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--blue);color:#fff;}
+  .btn-primary:hover{background:var(--blue-dark);}
+  .btn-grad{background:var(--grad);color:#fff;}
+  .btn-grad:hover{box-shadow:0 6px 18px rgba(122,91,247,.35);}
+  .btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
+  .btn-coral{background:var(--coral);color:#fff;}
+  .btn-sm{padding:7px 12px;font-size:12.5px;border-radius:8px;}
+  .btn-block{width:100%;justify-content:center;}
+  .btn[disabled]{opacity:.45;cursor:not-allowed;}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);}
+  .pad{padding:22px;}
+  .muted{color:var(--muted);}
+  .eyebrow{text-transform:uppercase;letter-spacing:.09em;font-size:11px;font-weight:700;color:var(--blue);}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;}
+  .chip-good{background:var(--good-bg);color:var(--good);}
+  .chip-warn{background:var(--warn-bg);color:var(--warn);}
+  .chip-bad{background:var(--bad-bg);color:var(--bad);}
+  .chip-blue{background:#eaf0ff;color:var(--blue-dark);}
+  .chip-purple{background:#f0ecff;color:var(--purple);}
+  .phase-tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.03em;}
+  .phase-1{background:#eaf0ff;color:var(--blue-dark);}
+  .phase-2{background:#f0ecff;color:var(--purple);}
+  input[type=text], input[type=email], input[type=password], select, textarea{
+    width:100%;padding:10px 12px;border-radius:9px;border:1.5px solid var(--border);font-size:14px;font-family:inherit;
+    background:#fff;color:var(--navy);
+  }
+  input:focus, select:focus, textarea:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue);}
+  label{font-size:12.5px;font-weight:600;color:var(--navy-soft);display:block;margin-bottom:5px;}
+  .field{margin-bottom:14px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .toast{
+    position:fixed;bottom:26px;left:50%;transform:translateX(-50%);
+    background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:600;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:999;display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none;transition:.25s;
+  }
+  .toast.show{opacity:1;bottom:34px;}
+
+  /* ---------- LOGIN ---------- */
+  #login-screen{
+    min-height:calc(100vh - 64px - 62px);display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 15% 20%, rgba(83,131,254,.10), transparent 45%),
+               radial-gradient(circle at 85% 80%, rgba(122,91,247,.12), transparent 45%),
+               var(--bg);
+    padding:40px 20px;
+  }
+  .login-card{width:400px;max-width:100%;padding:38px 34px;text-align:center;}
+  .brandmark{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:26px;}
+  .brand-logo{display:inline-flex;align-items:center;line-height:0;}
+  .brand-logo svg{display:block;height:23px;width:auto;}
+  .footer-mark path[fill="#1F2933"]{fill:#ffffff;}
+  .brandmark .gen3{font-size:11px;font-weight:700;background:var(--coral);color:#fff;padding:2px 7px;border-radius:6px;vertical-align:middle;margin-left:2px;}
+  #login-screen h1{font-size:21px;margin:0 0 6px;}
+  #login-screen p.sub{font-size:13.5px;color:var(--muted);margin:0 0 26px;}
+  .sso-note{font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.5;}
+
+  /* ---------- APP SHELL (horizontal nav, no sidebar) ---------- */
+  #app{display:none;min-height:calc(100vh - 64px);}
+  #app.active{display:block;}
+  .main-col{width:100%;}
+  .topbar-spacer{flex:1;}
+  .icon-btn{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:15px;}
+  .icon-btn:hover{border-color:var(--blue);}
+  .dot-badge{position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:var(--coral);border-radius:50%;border:2px solid #fff;}
+  .avatar{width:36px;height:36px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;overflow:hidden;}
+  .avatar svg{width:100%;height:100%;display:block;}
+  .avatar-lg{width:76px;height:76px;flex-shrink:0;}
+  .avatar-wrap{position:relative;}
+  .notif-wrap{position:relative;}
+  .notif-panel{
+    display:none;position:absolute;top:46px;right:0;width:328px;max-width:85vw;background:#fff;border:1px solid var(--border);
+    border-radius:12px;box-shadow:var(--shadow);z-index:320;overflow:hidden;
+  }
+  .notif-panel.open{display:block;}
+  .notif-panel .nph{padding:13px 16px;font-weight:700;font-size:13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;color:var(--navy);}
+  .notif-item{padding:12px 16px;border-bottom:1px solid var(--border);font-size:12.5px;display:flex;gap:10px;cursor:pointer;text-align:left;}
+  .notif-item:last-child{border-bottom:none;}
+  .notif-item:hover{background:var(--bg);}
+  .notif-item .ic{font-size:16px;flex-shrink:0;}
+  .notif-item .t{font-weight:700;color:var(--navy);}
+  .notif-item .d{color:var(--muted);margin-top:2px;line-height:1.4;}
+  .notif-footer{padding:10px 16px;text-align:center;font-size:12px;font-weight:700;color:var(--blue-dark);cursor:pointer;border-top:1px solid var(--border);}
+  .notif-footer:hover{background:var(--bg);}
+  .user-menu{
+    display:none;position:absolute;top:46px;right:0;background:#fff;border:1px solid var(--border);border-radius:10px;
+    box-shadow:var(--shadow);min-width:172px;padding:6px;z-index:320;
+  }
+  .user-menu.open{display:block;}
+  .user-menu a{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--navy);text-decoration:none;cursor:pointer;}
+  .user-menu a:hover{background:var(--bg);color:var(--blue-dark);}
+  .user-menu .divider{height:1px;background:var(--border);margin:4px 2px;}
+
+  /* horizontal app nav (Home / Cases / Billing / Product) */
+  .appnav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:64px;z-index:250;display:none;}
+  .appnav.active{display:block;}
+  .appnav-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:2px;padding:0 30px;}
+  .nav-top{
+    padding:16px 14px;font-size:13.5px;font-weight:700;color:var(--navy-soft);cursor:pointer;
+    border-bottom:3px solid transparent;display:flex;align-items:center;gap:5px;user-select:none;
+  }
+  .nav-top:hover{color:var(--blue-dark);}
+  .nav-top.active{color:var(--blue-dark);border-color:var(--blue);}
+  .nav-top .care{font-size:9px;opacity:.7;transform:translateY(1px);}
+  .nav-drop{position:relative;}
+  .nav-drop-panel{
+    display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border);
+    border-radius:0 0 12px 12px;box-shadow:var(--shadow);min-width:220px;padding:8px;z-index:260;
+  }
+  .nav-drop.open .nav-drop-panel{display:block;}
+  .nav-drop-panel a{display:block;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--navy-soft);text-decoration:none;cursor:pointer;}
+  .nav-drop-panel a:hover{background:var(--bg);color:var(--blue-dark);}
+
+  /* ---------- standard global header / footer ---------- */
+  .gheader{
+    position:sticky;top:0;z-index:300;height:64px;min-height:64px;background:#fff;color:var(--navy);
+    display:flex;align-items:center;padding:0 26px;gap:16px;
+    border-bottom:1px solid var(--border);box-shadow:0 1px 2px rgba(31,41,51,.04);
+  }
+  .gheader .brandmark{margin:0;}
+  .gheader-title{font-size:12.5px;font-weight:600;color:var(--muted);border-left:1px solid var(--border);padding-left:16px;margin-left:2px;}
+  .gh-actions{display:flex;align-items:center;gap:12px;}
+  .gh-actions.hidden{display:none;}
+  .gheader .icon-btn{background:#fff;border-color:var(--border);color:var(--navy);}
+  .gheader .icon-btn:hover{border-color:var(--blue);}
+  .gh-name{font-size:12.5px;color:var(--muted);text-align:right;line-height:1.3;}
+  .gh-name b{color:var(--navy);display:block;font-size:13px;}
+
+  .gfooter{
+    background:var(--navy);color:#aab4c2;padding:36px 30px 18px;font-size:12.5px;
+  }
+  .gfooter-inner{max-width:1180px;margin:0 auto;}
+  .gfooter-cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px;padding-bottom:26px;border-bottom:1px solid rgba(255,255,255,.1);}
+  @media(max-width:800px){.gfooter-cols{grid-template-columns:1fr 1fr;}}
+  .gfooter-cols h4{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#7d8b9a;margin:0 0 12px;font-weight:700;}
+  .gfooter-cols a{display:block;color:#cfd6de;text-decoration:none;font-size:13px;margin-bottom:9px;cursor:pointer;}
+  .gfooter-cols a:hover{color:#fff;text-decoration:underline;}
+  .gfooter-brand .brandmark{margin-bottom:10px;}
+  .gfooter-brand p{color:#9aa7b6;font-size:12.5px;line-height:1.6;margin:0;}
+  .gfooter-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:16px;font-size:11.5px;color:#7d8b9a;}
+  .gfooter-bottom a{color:#7d8b9a;text-decoration:none;margin-left:14px;}
+  .gfooter-bottom a:hover{color:#fff;text-decoration:underline;}
+
+  .gfooter-info{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.1);}
+  .gfooter-info h4{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#7d8b9a;margin:0 0 10px;font-weight:700;}
+  .gfooter-contact div{font-size:12.5px;color:#cfd6de;margin-bottom:6px;}
+  .gfooter-contact a{color:#cfd6de;text-decoration:none;}
+  .gfooter-contact a:hover{color:#fff;text-decoration:underline;}
+  .gfooter-social{display:flex;gap:10px;}
+  .gfooter-social a{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:13px;cursor:pointer;}
+  .gfooter-social a:hover{background:rgba(255,255,255,.18);}
+  .gfooter-legal-wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:18px;}
+  .gfooter-legal-logo{opacity:.85;}
+  .gfooter-legal-logo svg{height:18px;width:auto;}
+  .gfooter-legal-text{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:#7d8b9a;align-items:flex-end;}
+  @media(max-width:700px){.gfooter-legal-text{align-items:flex-start;}}
+  .gfooter-legal-links a{color:#7d8b9a;text-decoration:none;}
+  .gfooter-legal-links a:hover{color:#fff;text-decoration:underline;}
+  .gfooter-legal-links .sep{margin:0 8px;color:#4a5563;}
+
+  /* ---------- button-style option pickers (replace native selects) ---------- */
+  .opt-group{display:flex;flex-wrap:wrap;gap:8px;}
+  .opt-btn{
+    padding:9px 15px;border-radius:9px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:600;
+    color:var(--navy-soft);cursor:pointer;transition:.12s;
+  }
+  .opt-btn:hover{border-color:var(--blue);color:var(--blue-dark);}
+  .opt-btn.selected{border-color:var(--blue);background:#eaf0ff;color:var(--blue-dark);}
+
+  .content{padding:26px 30px 90px;max-width:1180px;width:100%;margin:0 auto;}
+  .view{display:none;}
+  .view.active{display:block;}
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;gap:16px;flex-wrap:wrap;}
+  .page-head h2{font-size:23px;margin:2px 0 4px;}
+  .banner{
+    display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;margin-bottom:20px;font-size:13.5px;
+  }
+  .banner-warn{background:var(--warn-bg);color:#7a5a06;}
+  .banner-info{background:#eaf0ff;color:var(--blue-dark);}
+  .banner button.dismiss{margin-left:auto;background:none;border:none;cursor:pointer;color:inherit;font-size:16px;opacity:.6;}
+
+  /* journey / status stepper — signature element */
+  .journey{display:flex;align-items:center;margin:14px 0 4px;}
+  .journey .step{flex:1;text-align:center;position:relative;}
+  .journey .step .bubble{
+    width:26px;height:26px;border-radius:50%;background:#e5e9f1;color:#98a2b3;font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 6px;position:relative;z-index:2;border:3px solid #fff;
+  }
+  .journey .step .line{position:absolute;top:13px;left:-50%;width:100%;height:3px;background:#e5e9f1;z-index:1;}
+  .journey .step:first-child .line{display:none;}
+  .journey .step.done .bubble{background:var(--blue);color:#fff;}
+  .journey .step.done .line{background:var(--blue);}
+  .journey .step.current .bubble{background:var(--grad);color:#fff;box-shadow:0 0 0 4px rgba(83,131,254,.15);}
+  .journey .step .lbl{font-size:11px;font-weight:700;color:var(--muted);}
+  .journey .step.done .lbl, .journey .step.current .lbl{color:var(--navy);}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:10px 14px;border-bottom:1.5px solid var(--border);}
+  td{padding:14px;border-bottom:1px solid var(--border);}
+  tr:last-child td{border-bottom:none;}
+  tr.row-click{cursor:pointer;}
+  tr.row-click:hover{background:#f8fafd;}
+
+  .list-card{overflow:hidden;}
+  .two-col{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;align-items:start;}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+  .kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--border);font-size:13.5px;}
+  .kv:last-child{border-bottom:none;}
+  .kv .k{color:var(--muted);}
+  .kv .v{font-weight:600;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  @media(max-width:900px){.stat-row{grid-template-columns:repeat(2,1fr);}}
+  .stat-card{padding:18px;}
+  .stat-card .num{font-family:'Sora',sans-serif;font-size:26px;font-weight:700;}
+  .stat-card .lbl{font-size:12px;color:var(--muted);font-weight:600;}
+
+  .comment{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);}
+  .comment:last-child{border-bottom:none;}
+  .comment .cavatar{width:30px;height:30px;border-radius:50%;background:#e5e9f1;color:var(--navy-soft);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;flex-shrink:0;}
+  .comment.staff .cavatar{background:var(--grad);color:#fff;}
+  .comment .body{flex:1;}
+  .comment .who{font-weight:700;font-size:13px;}
+  .comment .who .role{font-weight:500;color:var(--muted);font-size:11.5px;margin-left:6px;}
+  .comment .txt{font-size:13.5px;margin-top:3px;line-height:1.5;}
+  .comment .when{font-size:11px;color:var(--muted);margin-top:4px;}
+
+  .tabs{display:flex;gap:4px;border-bottom:1.5px solid var(--border);margin-bottom:20px;}
+  .tab{padding:10px 6px;margin-right:18px;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;}
+  .tab.active{color:var(--navy);border-color:var(--blue);}
+
+  .method-card{display:flex;align-items:center;gap:14px;padding:16px;border:1.5px solid var(--border);border-radius:12px;margin-bottom:10px;}
+  .method-card .icon{width:42px;height:30px;border-radius:6px;background:var(--navy);color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;letter-spacing:.02em;}
+  .method-card .icon.ach{background:var(--purple);}
+  .method-card .info{flex:1;}
+  .method-card .info .num{font-weight:700;font-size:13.5px;}
+  .method-card .info .exp{font-size:12px;color:var(--muted);}
+  .toggle{position:relative;width:42px;height:24px;border-radius:14px;background:#d8dde6;cursor:pointer;flex-shrink:0;transition:.2s;}
+  .toggle.on{background:var(--blue);}
+  .toggle .knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .toggle.on .knob{left:21px;}
+
+  .plan-card{border:2px solid var(--border);border-radius:16px;padding:22px;position:relative;cursor:pointer;transition:.15s;}
+  .plan-card:hover{border-color:var(--blue);}
+  .plan-card.selected{border-color:var(--blue);box-shadow:0 0 0 4px rgba(83,131,254,.12);}
+  .plan-card .rec{position:absolute;top:-11px;left:18px;background:var(--grad);color:#fff;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:999px;}
+  .plan-card h3{margin:6px 0 2px;font-size:18px;}
+  .plan-card .price{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;margin:8px 0;}
+  .plan-card .price span{font-size:13px;font-weight:500;color:var(--muted);}
+  .plan-card ul{list-style:none;padding:0;margin:14px 0 0;font-size:12.5px;color:var(--navy-soft);}
+  .plan-card li{padding:4px 0;display:flex;gap:7px;}
+
+  /* PUBLIC BUY SITE CHROME */
+  #public-app{display:none;min-height:100vh;background:#fff;}
+  #public-app.active{display:block;}
+  .pub-hero{
+    background:radial-gradient(circle at 85% 10%, rgba(83,131,254,.10), transparent 45%),
+               radial-gradient(circle at 8% 90%, rgba(122,91,247,.10), transparent 45%),
+               #fbfcfe;
+    color:var(--navy);padding:64px 6% 56px;text-align:center;position:relative;overflow:hidden;
+    border-bottom:1px solid var(--border);
+  }
+  .pub-hero > *{position:relative;z-index:1;}
+  .pub-hero h1{font-size:38px;max-width:680px;margin:14px auto 14px;line-height:1.15;color:var(--navy);}
+  .pub-hero p{color:var(--muted);max-width:520px;margin:0 auto 30px;font-size:15.5px;}
+  .pub-eyebrow{color:var(--blue-dark);}
+  .pub-stats{background:#fff;border-bottom:1px solid var(--border);padding:26px 6%;}
+  .pub-stats-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:center;}
+  @media(max-width:700px){.pub-stats-inner{grid-template-columns:1fr;}}
+  .pub-stats-inner .n{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .pub-stats-inner .l{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+  .pub-body{padding:50px 6% 80px;max-width:1080px;margin:0 auto;}
+  .pub-cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .pub-cta-row .btn{border-radius:999px;padding:14px 28px;}
+
+  /* feature tabs (mirrors webpt.com's home feature-tabs pattern) */
+  .pub-tabs{padding:54px 6% 10px;max-width:1080px;margin:0 auto;}
+  .pub-tabs h2{text-align:center;margin-bottom:26px;font-size:26px;}
+  .pub-tabs-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+  .pub-tabs-nav button{background:#fff;border:1.5px solid var(--border);border-radius:999px;padding:9px 18px;font-size:13px;font-weight:700;color:var(--navy-soft);cursor:pointer;}
+  .pub-tabs-nav button:hover{border-color:var(--blue);color:var(--blue-dark);}
+  .pub-tabs-nav button.active{background:var(--grad);color:#fff;border-color:transparent;}
+  .pub-tab-card{display:none;background:#fff;border:1px solid var(--border);border-radius:20px;padding:36px;box-shadow:var(--shadow);}
+  .pub-tab-card.active{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;}
+  @media(max-width:800px){.pub-tab-card.active{grid-template-columns:1fr;}}
+  .pub-tab-card h3{font-size:23px;margin:4px 0 10px;}
+  .pub-tab-card ul{list-style:none;padding:0;margin:14px 0 18px;}
+  .pub-tab-card li{display:flex;gap:9px;padding:6px 0;font-size:13.5px;color:var(--navy-soft);}
+  .pub-tab-visual{
+    background:linear-gradient(135deg, rgba(83,131,254,.10), rgba(122,91,247,.10));
+    border-radius:16px;min-height:200px;display:flex;align-items:center;justify-content:center;font-size:56px;
+  }
+
+  /* testimonial carousel */
+  .pub-quotes{background:#fbfcfe;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:56px 6%;text-align:center;}
+  .pub-quotes h2{margin-bottom:32px;font-size:26px;}
+  .quote-carousel{max-width:640px;margin:0 auto;min-height:150px;}
+  .quote-slide{display:none;}
+  .quote-slide.active{display:block;}
+  .quote-slide .txt{font-size:17px;color:var(--navy);line-height:1.6;margin-bottom:16px;}
+  .quote-slide .txt:before{content:"\201C";}
+  .quote-slide .txt:after{content:"\201D";}
+  .quote-slide .who{font-size:13px;color:var(--muted);font-weight:700;}
+  .quote-nav{display:flex;justify-content:center;gap:18px;margin-top:24px;align-items:center;}
+  .quote-nav button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:13px;color:var(--navy-soft);}
+  .quote-nav button:hover{border-color:var(--blue);color:var(--blue-dark);}
+  .quote-dots{display:flex;gap:6px;}
+  .quote-dots span{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;display:inline-block;}
+  .quote-dots span.active{background:var(--blue);}
+
+  .wizard-shell{max-width:640px;margin:40px auto;padding:0 20px;}
+  .wizard-progress{display:flex;gap:6px;margin-bottom:26px;}
+  .wizard-progress .seg{flex:1;height:5px;border-radius:4px;background:var(--border);}
+  .wizard-progress .seg.on{background:var(--grad);}
+
+  /* Agentforce chat widget */
+  .af-bubble{
+    position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--grad);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;cursor:pointer;
+    box-shadow:0 10px 26px rgba(122,91,247,.4);z-index:200;border:none;
+  }
+  .af-panel{
+    position:fixed;bottom:96px;right:24px;width:352px;max-width:90vw;height:480px;max-height:75vh;background:#fff;
+    border-radius:16px;box-shadow:0 20px 60px rgba(20,25,35,.25);z-index:201;display:none;flex-direction:column;overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .af-panel.open{display:flex;}
+  .af-head{background:var(--grad);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:10px;}
+  .af-head .t{font-weight:700;font-size:14px;}
+  .af-head .s{font-size:11px;opacity:.85;}
+  .af-head button{margin-left:auto;background:rgba(255,255,255,.2);border:none;color:#fff;width:26px;height:26px;border-radius:7px;cursor:pointer;}
+  .af-body{flex:1;overflow:auto;padding:16px;background:#f8f9fc;display:flex;flex-direction:column;gap:10px;}
+  .af-msg{max-width:82%;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.45;}
+  .af-msg.bot{background:#fff;border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:3px;}
+  .af-msg.user{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
+  .af-msg.system{align-self:center;background:#eef1f6;color:var(--muted);font-size:11.5px;padding:6px 12px;border-radius:20px;}
+  .af-quick{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px;}
+  .af-quick button{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:6px 11px;font-size:11.5px;font-weight:600;cursor:pointer;}
+  .af-quick button:hover{border-color:var(--blue);color:var(--blue);}
+  .af-input{display:flex;border-top:1px solid var(--border);padding:10px;gap:8px;}
+  .af-input input{border-radius:10px;}
+  .af-input button{background:var(--grad);color:#fff;border:none;width:38px;border-radius:10px;cursor:pointer;flex-shrink:0;}
+
+  .track-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+  .track-item:last-child{border-bottom:none;}
+  .track-item .mk{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;margin-top:1px;}
+
+  .sched-bar-row{display:flex;align-items:center;gap:12px;padding:8px 0;font-size:12.5px;}
+  .sched-bar-row .mo{width:64px;color:var(--muted);font-weight:600;}
+  .sched-bar-track{flex:1;height:10px;background:#eef1f6;border-radius:6px;overflow:hidden;}
+  .sched-bar-fill{height:100%;background:var(--grad);}
+  .sched-bar-row .amt{width:74px;text-align:right;font-weight:700;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ STANDARD HEADER (all states) ============================================================ -->
+<header class="gheader">
+  <div class="brandmark"><span class="brand-logo"><svg viewBox="0 0 140 36" xmlns="http://www.w3.org/2000/svg"><path d="M137.725 10.7515L137.393 12.6119C137.327 12.98 136.994 13.25 136.611 13.25H132.475L130.085 26.4886C130.014 26.8568 129.687 27.1267 129.303 27.1267H126.504C126.015 27.1267 125.637 26.6948 125.723 26.2235L128.068 13.2549H125.677C125.566 13.2549 125.465 13.1862 125.43 13.0782C125.092 12.1014 124.502 11.1098 123.72 10.2704C123.569 10.1035 123.69 9.84339 123.917 9.84339H128.713L130.272 1.08637C130.337 0.718218 130.67 0.448242 131.053 0.448242H133.857C134.347 0.448242 134.725 0.880203 134.639 1.34652L133.136 9.84339H136.954C137.443 9.84339 137.821 10.2753 137.736 10.7466L137.725 10.7515Z" fill="#1F2933"/><path d="M139.502 24.978C139.502 25.2971 139.446 25.5916 139.33 25.8567C139.214 26.1217 139.058 26.3475 138.861 26.5341C138.664 26.7206 138.432 26.8679 138.17 26.9709C137.908 27.074 137.636 27.128 137.348 27.128C137.03 27.128 136.738 27.074 136.476 26.966C136.213 26.858 135.981 26.7059 135.795 26.5144C135.603 26.323 135.457 26.0972 135.346 25.837C135.24 25.5769 135.185 25.2922 135.185 24.9879C135.185 24.6688 135.24 24.3743 135.356 24.1092C135.472 23.8441 135.628 23.6183 135.825 23.4318C136.022 23.2453 136.254 23.098 136.516 22.9949C136.778 22.8919 137.056 22.8428 137.348 22.8428C137.641 22.8428 137.908 22.8919 138.17 22.9949C138.432 23.098 138.659 23.2453 138.861 23.4318C139.058 23.6183 139.214 23.8441 139.33 24.1092C139.446 24.3743 139.502 24.6639 139.502 24.9879V24.978ZM139.169 24.978C139.169 24.6982 139.123 24.4381 139.028 24.2025C138.932 23.9669 138.806 23.7656 138.639 23.5938C138.473 23.422 138.281 23.2944 138.059 23.2011C137.837 23.1078 137.6 23.0637 137.343 23.0637C137.086 23.0637 136.844 23.1127 136.622 23.2011C136.4 23.2944 136.203 23.4269 136.037 23.5938C135.87 23.7656 135.739 23.9669 135.649 24.2025C135.558 24.4381 135.507 24.6982 135.507 24.978C135.507 25.2431 135.548 25.4885 135.633 25.7241C135.719 25.9549 135.84 26.1561 136.002 26.3328C136.163 26.5095 136.355 26.6421 136.576 26.7451C136.803 26.8482 137.056 26.8973 137.343 26.8973C137.6 26.8973 137.837 26.8531 138.059 26.7599C138.281 26.6666 138.473 26.5341 138.639 26.3672C138.806 26.1954 138.937 25.9941 139.028 25.7634C139.123 25.5278 139.169 25.2726 139.169 24.9829V24.978ZM137.005 25.9303H136.692V24.0847H137.414C137.641 24.0847 137.817 24.1288 137.933 24.2074C138.049 24.2908 138.11 24.4283 138.11 24.6148C138.11 24.7817 138.064 24.9044 137.968 24.978C137.873 25.0517 137.757 25.1007 137.615 25.1155L138.145 25.9254H137.792L137.303 25.1351H137.01V25.9254L137.005 25.9303ZM137.353 24.8848C137.414 24.8848 137.469 24.8848 137.52 24.8799C137.575 24.8799 137.62 24.8651 137.661 24.8406C137.701 24.821 137.731 24.7915 137.757 24.7522C137.782 24.713 137.792 24.6639 137.792 24.5952C137.792 24.5412 137.777 24.4921 137.752 24.4626C137.726 24.4283 137.691 24.4037 137.651 24.389C137.61 24.3694 137.565 24.3595 137.52 24.3546C137.469 24.3546 137.424 24.3497 137.378 24.3497H137V24.8897H137.348L137.353 24.8848Z" fill="#1F2933"/><path d="M57.7325 9.82229H61.1114C61.5149 9.82229 61.7671 10.2543 61.5754 10.5929L52.7095 26.708C52.5733 26.9584 52.301 27.1204 52.0135 27.1204H49.4364C49.0481 27.1204 48.7203 26.8406 48.6547 26.4675L47.051 16.8711C46.9653 16.3802 46.2895 16.2821 46.0575 16.7238L40.8882 26.6933C40.752 26.9535 40.4797 27.1253 40.1822 27.1253H37.6303C37.2521 27.1253 36.9242 26.8504 36.8536 26.4921L33.6462 10.4506C33.5806 10.1315 33.8328 9.8272 34.1656 9.8272H37.595C37.9833 9.8272 38.3162 10.1168 38.3767 10.4899L39.7737 19.4138C39.8543 19.9046 40.5352 20.0126 40.7672 19.566L45.5834 10.2543C45.7145 9.99409 45.9919 9.82229 46.2895 9.82229H49.033C49.4213 9.82229 49.7542 10.107 49.8147 10.4801L51.2116 19.404C51.2923 19.8948 51.9732 20.0028 52.2052 19.5561L57.0214 10.2444C57.1525 9.98428 57.4299 9.81738 57.7275 9.81738L57.7325 9.82229Z" fill="#1F2933"/><path d="M79.4398 18.3106C79.4196 18.4432 79.3944 18.5904 79.3641 18.7328C79.228 19.4593 78.5673 19.9747 77.8108 19.9747H65.8786C65.5559 19.9747 65.3037 20.2594 65.3491 20.5637C65.6668 22.5861 67.2655 23.6709 69.6661 23.6709C71.3707 23.6709 73.1106 23.0377 74.3815 21.9283C74.679 21.6681 75.1279 21.6681 75.4254 21.9234L76.8224 23.126C77.1603 23.4156 77.1855 23.9212 76.8728 24.2354C74.795 26.3706 71.6682 27.5536 68.7079 27.5536C63.4226 27.5536 60.0386 23.8525 61.0271 18.453C62.0508 12.9406 66.8822 9.38672 71.9759 9.38672C77.0695 9.38672 80.4182 12.9013 79.4247 18.3008H79.4297L79.4398 18.3106ZM74.7799 16.9804C75.0825 16.9804 75.3245 16.735 75.3144 16.4404C75.2237 14.3984 73.625 13.2106 71.3505 13.2106C69.2273 13.2106 67.2907 14.1383 66.2014 16.249C66.0249 16.5877 66.2922 16.9902 66.6805 16.9902H74.7849H74.7799V16.9804Z" fill="#1F2933"/><path d="M101.457 18.463C100.469 23.9754 95.7536 27.5636 91.0786 27.5636C88.915 27.5636 86.5548 26.6408 85.6823 24.7902L85.3747 26.4984C85.3091 26.8568 84.9914 27.1267 84.6081 27.1267H81.7789C81.2998 27.1267 80.9266 26.6997 81.0123 26.2383L85.5562 1.106C85.6268 0.728035 85.9647 0.448242 86.3632 0.448242H89.1621C89.6412 0.448242 90.0144 0.875294 89.9287 1.33671L87.9618 12.1799C89.4799 10.3293 92.1427 9.40652 94.3869 9.40652C99.0619 9.40652 102.486 12.9211 101.457 18.4728V18.463ZM92.9395 13.3923C90.3927 13.3923 87.4626 15.3902 86.8927 18.4237C86.3581 21.4572 88.4107 23.568 91.1088 23.568C93.8069 23.568 96.505 21.31 97.0396 18.4237C97.5742 15.5374 95.6729 13.3923 92.9344 13.3923H92.9395Z" fill="#1F2933"/><path d="M123.678 18.5C122.689 24.0124 118.014 27.5663 113.339 27.5663C111.095 27.5663 108.816 26.6778 107.903 24.8273L106.082 34.9194C106.012 35.2876 105.684 35.5576 105.301 35.5576H102.497C102.007 35.5576 101.629 35.1256 101.715 34.6544L106.077 10.4842C106.148 10.1161 106.476 9.84607 106.859 9.84607H109.663C110.152 9.84607 110.53 10.278 110.445 10.7493L110.187 12.1777C111.705 10.2928 114.404 9.4043 116.577 9.4043C121.252 9.4043 124.712 12.9532 123.683 18.5049L123.678 18.5ZM115.16 13.3901C112.462 13.3901 109.683 15.4616 109.113 18.5C108.579 21.5728 110.788 23.5657 113.329 23.5657C116.063 23.5657 118.726 21.3814 119.26 18.5C119.754 15.653 117.893 13.3901 115.155 13.3901H115.16Z" fill="#1F2933"/><path d="M24.477 0.0472934L24.4174 0.037065C23.2517 -0.163006 22.14 0.594627 21.9344 1.72929L17.6959 25.1262C17.4903 26.2608 18.2687 27.3429 19.4345 27.5429L19.4941 27.5532C20.6598 27.7532 21.7715 26.9956 21.977 25.8609L26.2156 2.46403C26.4212 1.32938 25.6428 0.247364 24.477 0.0472934Z" fill="#FC5C6F"/><path d="M14.0922 8.46636L14.0376 8.45699C12.8718 8.25692 11.7601 9.01455 11.5546 10.1492L7.31597 33.5461C7.11042 34.6808 7.88882 35.7628 9.05458 35.9629L9.10921 35.9722C10.275 36.1723 11.3866 35.4147 11.5922 34.28L15.8308 10.8831C16.0364 9.74845 15.258 8.66643 14.0922 8.46636Z" fill="#7A5BF7"/><path d="M6.81102 0.0648717L6.75142 0.0546431C5.58566 -0.145428 4.47399 0.612205 4.26843 1.74686L0.0298392 25.1438C-0.175716 26.2784 0.602685 27.3604 1.76845 27.5605L1.82805 27.5707C2.99381 27.7708 4.10548 27.0132 4.31103 25.8785L8.54963 2.48161C8.75518 1.34695 7.97678 0.264942 6.81102 0.0648717Z" fill="#5383FE"/></svg></span><span class="gen3">GEN 3</span></div>
+  <div class="gheader-title">Support Hub</div>
+  <div class="topbar-spacer"></div>
+
+  <div id="gh-actions-anon" class="gh-actions"></div>
+
+  <div id="gh-actions-public" class="gh-actions hidden">
+    <button class="btn btn-ghost btn-sm" onclick="backToLogin()">← Back to sign-in</button>
+  </div>
+
+  <div id="gh-actions-member" class="gh-actions hidden">
+    <div class="notif-wrap">
+      <button class="icon-btn" title="Notifications" onclick="toggleNotifPanel(event)">🔔<span class="dot-badge" id="notif-dot"></span></button>
+      <div class="notif-panel" id="notif-panel">
+        <div class="nph"><span>Notifications</span><span class="chip chip-blue" style="font-size:10.5px;">3 new</span></div>
+        <div class="notif-item" onclick="closeAllOverlays();openCase('00234');">
+          <div class="ic">💬</div>
+          <div><div class="t">New reply on case #00234</div><div class="d">Priya from Tier‑2 Support just updated your eligibility check case.</div></div>
+        </div>
+        <div class="notif-item" onclick="closeAllOverlays();activateNav('billing-invoices');">
+          <div class="ic">💳</div>
+          <div><div class="t">Invoice INV‑10456 due Jul 15</div><div class="d">$1,420.00 — autopay will attempt payment on the due date.</div></div>
+        </div>
+        <div class="notif-item" onclick="closeAllOverlays();activateNav('dashboard');">
+          <div class="ic">⚠️</div>
+          <div><div class="t">Known issue: eligibility exports</div><div class="d">Denver Clinic exports may show yesterday's data while we resolve a sync delay.</div></div>
+        </div>
+        <div class="notif-footer" onclick="closeAllOverlays();activateNav('cases-list');">View all cases →</div>
+      </div>
+    </div>
+    <div class="gh-name"><b>Jordan Reyes</b>Sunrise Rehab Partners</div>
+    <div class="avatar-wrap">
+      <div class="avatar" onclick="toggleUserMenu(event)" title="Account"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" fill="#DCE6F5"/><path d="M9 40c0-8.5 6.5-13.5 11-13.5s11 5 11 13.5" fill="#3F68E0"/><circle cx="20" cy="17" r="7.5" fill="#F0BE97"/><path d="M12.2 15.5c0-6 3.6-10 7.8-10s7.8 4 7.8 10c-1.8-1.6-4.6-2.6-7.8-2.6s-6 1-7.8 2.6z" fill="#4A3323"/></svg></div>
+      <div class="user-menu" id="user-menu">
+        <a onclick="closeUserMenu();openProfile();">👤 My Profile</a>
+        <div class="divider"></div>
+        <a onclick="closeUserMenu();doLogout();">🚪 Log out</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================ HORIZONTAL APP NAV ============================================================ -->
+<nav class="appnav" id="app-nav">
+  <div class="appnav-inner">
+    <div class="nav-top active" data-group="home" onclick="activateNav('dashboard')">Home</div>
+    <div class="nav-top" data-group="cases" onclick="activateNav('cases-list')">Cases</div>
+    <div class="nav-drop" data-group="billing">
+      <div class="nav-top" onclick="toggleDrop(event,this)">Billing <span class="care">▾</span></div>
+      <div class="nav-drop-panel">
+        <a onclick="activateNav('billing-invoices')">Invoices</a>
+        <a onclick="activateNav('billing-methods')">Payment Methods</a>
+        <a onclick="activateNav('billing-autopay')">Autopay</a>
+        <a onclick="activateNav('billing-plan')">Payment Plan</a>
+        <a onclick="activateNav('billing-schedule')">12‑Month Schedule</a>
+      </div>
+    </div>
+    <div class="nav-drop" data-group="product">
+      <div class="nav-top" onclick="toggleDrop(event,this)">Product <span class="care">▾</span></div>
+      <div class="nav-drop-panel">
+        <a onclick="activateNav('upgrade')">Buy / Add Products</a>
+        <a onclick="activateNav('implementation')">Implementation</a>
+      </div>
+    </div>
+    <div class="nav-top" data-group="knowledge" onclick="activateNav('knowledge')">Knowledge</div>
+  </div>
+</nav>
+
+<!-- ============================================================ LOGIN ============================================================ -->
+<div id="login-screen">
+  <div class="card login-card">
+    <div class="brandmark"><span class="brand-logo"><svg viewBox="0 0 140 36" xmlns="http://www.w3.org/2000/svg"><path d="M137.725 10.7515L137.393 12.6119C137.327 12.98 136.994 13.25 136.611 13.25H132.475L130.085 26.4886C130.014 26.8568 129.687 27.1267 129.303 27.1267H126.504C126.015 27.1267 125.637 26.6948 125.723 26.2235L128.068 13.2549H125.677C125.566 13.2549 125.465 13.1862 125.43 13.0782C125.092 12.1014 124.502 11.1098 123.72 10.2704C123.569 10.1035 123.69 9.84339 123.917 9.84339H128.713L130.272 1.08637C130.337 0.718218 130.67 0.448242 131.053 0.448242H133.857C134.347 0.448242 134.725 0.880203 134.639 1.34652L133.136 9.84339H136.954C137.443 9.84339 137.821 10.2753 137.736 10.7466L137.725 10.7515Z" fill="#1F2933"/><path d="M139.502 24.978C139.502 25.2971 139.446 25.5916 139.33 25.8567C139.214 26.1217 139.058 26.3475 138.861 26.5341C138.664 26.7206 138.432 26.8679 138.17 26.9709C137.908 27.074 137.636 27.128 137.348 27.128C137.03 27.128 136.738 27.074 136.476 26.966C136.213 26.858 135.981 26.7059 135.795 26.5144C135.603 26.323 135.457 26.0972 135.346 25.837C135.24 25.5769 135.185 25.2922 135.185 24.9879C135.185 24.6688 135.24 24.3743 135.356 24.1092C135.472 23.8441 135.628 23.6183 135.825 23.4318C136.022 23.2453 136.254 23.098 136.516 22.9949C136.778 22.8919 137.056 22.8428 137.348 22.8428C137.641 22.8428 137.908 22.8919 138.17 22.9949C138.432 23.098 138.659 23.2453 138.861 23.4318C139.058 23.6183 139.214 23.8441 139.33 24.1092C139.446 24.3743 139.502 24.6639 139.502 24.9879V24.978ZM139.169 24.978C139.169 24.6982 139.123 24.4381 139.028 24.2025C138.932 23.9669 138.806 23.7656 138.639 23.5938C138.473 23.422 138.281 23.2944 138.059 23.2011C137.837 23.1078 137.6 23.0637 137.343 23.0637C137.086 23.0637 136.844 23.1127 136.622 23.2011C136.4 23.2944 136.203 23.4269 136.037 23.5938C135.87 23.7656 135.739 23.9669 135.649 24.2025C135.558 24.4381 135.507 24.6982 135.507 24.978C135.507 25.2431 135.548 25.4885 135.633 25.7241C135.719 25.9549 135.84 26.1561 136.002 26.3328C136.163 26.5095 136.355 26.6421 136.576 26.7451C136.803 26.8482 137.056 26.8973 137.343 26.8973C137.6 26.8973 137.837 26.8531 138.059 26.7599C138.281 26.6666 138.473 26.5341 138.639 26.3672C138.806 26.1954 138.937 25.9941 139.028 25.7634C139.123 25.5278 139.169 25.2726 139.169 24.9829V24.978ZM137.005 25.9303H136.692V24.0847H137.414C137.641 24.0847 137.817 24.1288 137.933 24.2074C138.049 24.2908 138.11 24.4283 138.11 24.6148C138.11 24.7817 138.064 24.9044 137.968 24.978C137.873 25.0517 137.757 25.1007 137.615 25.1155L138.145 25.9254H137.792L137.303 25.1351H137.01V25.9254L137.005 25.9303ZM137.353 24.8848C137.414 24.8848 137.469 24.8848 137.52 24.8799C137.575 24.8799 137.62 24.8651 137.661 24.8406C137.701 24.821 137.731 24.7915 137.757 24.7522C137.782 24.713 137.792 24.6639 137.792 24.5952C137.792 24.5412 137.777 24.4921 137.752 24.4626C137.726 24.4283 137.691 24.4037 137.651 24.389C137.61 24.3694 137.565 24.3595 137.52 24.3546C137.469 24.3546 137.424 24.3497 137.378 24.3497H137V24.8897H137.348L137.353 24.8848Z" fill="#1F2933"/><path d="M57.7325 9.82229H61.1114C61.5149 9.82229 61.7671 10.2543 61.5754 10.5929L52.7095 26.708C52.5733 26.9584 52.301 27.1204 52.0135 27.1204H49.4364C49.0481 27.1204 48.7203 26.8406 48.6547 26.4675L47.051 16.8711C46.9653 16.3802 46.2895 16.2821 46.0575 16.7238L40.8882 26.6933C40.752 26.9535 40.4797 27.1253 40.1822 27.1253H37.6303C37.2521 27.1253 36.9242 26.8504 36.8536 26.4921L33.6462 10.4506C33.5806 10.1315 33.8328 9.8272 34.1656 9.8272H37.595C37.9833 9.8272 38.3162 10.1168 38.3767 10.4899L39.7737 19.4138C39.8543 19.9046 40.5352 20.0126 40.7672 19.566L45.5834 10.2543C45.7145 9.99409 45.9919 9.82229 46.2895 9.82229H49.033C49.4213 9.82229 49.7542 10.107 49.8147 10.4801L51.2116 19.404C51.2923 19.8948 51.9732 20.0028 52.2052 19.5561L57.0214 10.2444C57.1525 9.98428 57.4299 9.81738 57.7275 9.81738L57.7325 9.82229Z" fill="#1F2933"/><path d="M79.4398 18.3106C79.4196 18.4432 79.3944 18.5904 79.3641 18.7328C79.228 19.4593 78.5673 19.9747 77.8108 19.9747H65.8786C65.5559 19.9747 65.3037 20.2594 65.3491 20.5637C65.6668 22.5861 67.2655 23.6709 69.6661 23.6709C71.3707 23.6709 73.1106 23.0377 74.3815 21.9283C74.679 21.6681 75.1279 21.6681 75.4254 21.9234L76.8224 23.126C77.1603 23.4156 77.1855 23.9212 76.8728 24.2354C74.795 26.3706 71.6682 27.5536 68.7079 27.5536C63.4226 27.5536 60.0386 23.8525 61.0271 18.453C62.0508 12.9406 66.8822 9.38672 71.9759 9.38672C77.0695 9.38672 80.4182 12.9013 79.4247 18.3008H79.4297L79.4398 18.3106ZM74.7799 16.9804C75.0825 16.9804 75.3245 16.735 75.3144 16.4404C75.2237 14.3984 73.625 13.2106 71.3505 13.2106C69.2273 13.2106 67.2907 14.1383 66.2014 16.249C66.0249 16.5877 66.2922 16.9902 66.6805 16.9902H74.7849H74.7799V16.9804Z" fill="#1F2933"/><path d="M101.457 18.463C100.469 23.9754 95.7536 27.5636 91.0786 27.5636C88.915 27.5636 86.5548 26.6408 85.6823 24.7902L85.3747 26.4984C85.3091 26.8568 84.9914 27.1267 84.6081 27.1267H81.7789C81.2998 27.1267 80.9266 26.6997 81.0123 26.2383L85.5562 1.106C85.6268 0.728035 85.9647 0.448242 86.3632 0.448242H89.1621C89.6412 0.448242 90.0144 0.875294 89.9287 1.33671L87.9618 12.1799C89.4799 10.3293 92.1427 9.40652 94.3869 9.40652C99.0619 9.40652 102.486 12.9211 101.457 18.4728V18.463ZM92.9395 13.3923C90.3927 13.3923 87.4626 15.3902 86.8927 18.4237C86.3581 21.4572 88.4107 23.568 91.1088 23.568C93.8069 23.568 96.505 21.31 97.0396 18.4237C97.5742 15.5374 95.6729 13.3923 92.9344 13.3923H92.9395Z" fill="#1F2933"/><path d="M123.678 18.5C122.689 24.0124 118.014 27.5663 113.339 27.5663C111.095 27.5663 108.816 26.6778 107.903 24.8273L106.082 34.9194C106.012 35.2876 105.684 35.5576 105.301 35.5576H102.497C102.007 35.5576 101.629 35.1256 101.715 34.6544L106.077 10.4842C106.148 10.1161 106.476 9.84607 106.859 9.84607H109.663C110.152 9.84607 110.53 10.278 110.445 10.7493L110.187 12.1777C111.705 10.2928 114.404 9.4043 116.577 9.4043C121.252 9.4043 124.712 12.9532 123.683 18.5049L123.678 18.5ZM115.16 13.3901C112.462 13.3901 109.683 15.4616 109.113 18.5C108.579 21.5728 110.788 23.5657 113.329 23.5657C116.063 23.5657 118.726 21.3814 119.26 18.5C119.754 15.653 117.893 13.3901 115.155 13.3901H115.16Z" fill="#1F2933"/><path d="M24.477 0.0472934L24.4174 0.037065C23.2517 -0.163006 22.14 0.594627 21.9344 1.72929L17.6959 25.1262C17.4903 26.2608 18.2687 27.3429 19.4345 27.5429L19.4941 27.5532C20.6598 27.7532 21.7715 26.9956 21.977 25.8609L26.2156 2.46403C26.4212 1.32938 25.6428 0.247364 24.477 0.0472934Z" fill="#FC5C6F"/><path d="M14.0922 8.46636L14.0376 8.45699C12.8718 8.25692 11.7601 9.01455 11.5546 10.1492L7.31597 33.5461C7.11042 34.6808 7.88882 35.7628 9.05458 35.9629L9.10921 35.9722C10.275 36.1723 11.3866 35.4147 11.5922 34.28L15.8308 10.8831C16.0364 9.74845 15.258 8.66643 14.0922 8.46636Z" fill="#7A5BF7"/><path d="M6.81102 0.0648717L6.75142 0.0546431C5.58566 -0.145428 4.47399 0.612205 4.26843 1.74686L0.0298392 25.1438C-0.175716 26.2784 0.602685 27.3604 1.76845 27.5605L1.82805 27.5707C2.99381 27.7708 4.10548 27.0132 4.31103 25.8785L8.54963 2.48161C8.75518 1.34695 7.97678 0.264942 6.81102 0.0648717Z" fill="#5383FE"/></svg></span><span class="gen3">GEN 3</span></div>
+    <h1>Sign in to Support Hub</h1>
+    <p class="sub">Authenticate with your WebPT organization identity.</p>
+    <button class="btn btn-primary btn-block" style="margin-bottom:10px;" onclick="doLogin()">🔐 Sign in with WebPT SSO</button>
+    <button class="btn btn-ghost btn-block" onclick="goPublic()">Not a member yet? Explore buying Gen 3 →</button>
+    <div class="sso-note">Simulates SAML JIT provisioning (P1‑1 / R11): first successful SSO login provisions Experience Cloud access automatically. WebPT owns the IdP — Truffle configures EC as the service provider only.</div>
+  </div>
+</div>
+
+<!-- ============================================================ AUTHENTICATED APP ============================================================ -->
+<div id="app">
+  <div class="main-col">
+    <div class="content">
+
+      <!-- ---------------- DASHBOARD ---------------- -->
+      <div class="view active" id="view-dashboard">
+        <div class="banner banner-warn">
+          <div>⚠️</div>
+          <div><b>Known issue:</b> Eligibility exports for the Denver Clinic may show yesterday's data while we resolve a sync delay with RCM. No action needed — this refreshes automatically. <span class="muted">Posted 7:12 AM</span></div>
+          <button class="dismiss" onclick="this.closest('.banner').remove()">✕</button>
+        </div>
+        <div class="page-head">
+          <div><div class="eyebrow">Home</div><h2>Good morning, Jordan 👋</h2><p class="muted" style="margin:0;">Sunrise Rehab Partners · Gen 3 account hierarchy</p></div>
+          <button class="btn btn-grad" onclick="activateNav('cases-list')">🎫 View support cases</button>
+        </div>
+
+        <div class="stat-row">
+          <div class="card stat-card"><div class="num">3</div><div class="lbl">Open support cases</div></div>
+          <div class="card stat-card"><div class="num" style="color:var(--coral);">$4,280</div><div class="lbl">Invoices due</div></div>
+          <div class="card stat-card"><div class="num" style="color:var(--good);">Active</div><div class="lbl">Autopay status</div></div>
+          <div class="card stat-card"><div class="num">62%</div><div class="lbl">Implementation complete</div></div>
+        </div>
+
+        <div class="two-col">
+          <div class="card pad">
+            <h3 style="margin-top:0;">Recent case activity</h3>
+            <table>
+              <tr><th>Case</th><th>Subject</th><th>Status</th><th></th></tr>
+              <tr class="row-click" onclick="openCase('00234')"><td>#00234</td><td>Eligibility check failing for new payer</td><td><span class="chip chip-warn">In Progress</span></td><td>→</td></tr>
+              <tr class="row-click" onclick="openCase('00229')"><td>#00229</td><td>Clinic 2 login shows wrong account</td><td><span class="chip chip-blue">Waiting on You</span></td><td>→</td></tr>
+              <tr class="row-click" onclick="openCase('00218')"><td>#00218</td><td>Report export missing modifiers</td><td><span class="chip chip-good">Resolved</span></td><td>→</td></tr>
+            </table>
+          </div>
+          <div class="card pad">
+            <h3 style="margin-top:0;">Entitlements <span class="chip chip-purple" style="margin-left:6px;">Subscription‑aware</span></h3>
+            <div class="kv"><div class="k">Plan</div><div class="v">Gen 3 Enhanced</div></div>
+            <div class="kv"><div class="k">Providers licensed</div><div class="v">7 / 10</div></div>
+            <div class="kv"><div class="k">RCM add-on</div><div class="v">Active</div></div>
+            <div class="kv"><div class="k">Renewal</div><div class="v">Mar 1, 2027</div></div>
+            <button class="btn btn-ghost btn-block" style="margin-top:14px;" onclick="activateNav('upgrade')">Explore add-ons →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------------- CASE LIST ---------------- -->
+      <div class="view" id="view-cases-list">
+        <div class="page-head">
+          <div><div class="eyebrow phase-tag phase-1">Phase 1 · P1‑2, P1‑3</div><h2>Support cases</h2><p class="muted" style="margin:0;">Visible cases are created by your embedded EMR assistant when it escalates to Tier‑2 support (P1‑4). You don't open cases directly here.</p></div>
+        </div>
+        <div class="tabs">
+          <div class="tab active">My organization (4)</div>
+          <div class="tab">My cases only (2)</div>
+        </div>
+        <div class="card list-card">
+          <table>
+            <tr><th>Case</th><th>Subject</th><th>Clinic</th><th>Status</th><th>Updated</th><th></th></tr>
+            <tr class="row-click" onclick="openCase('00234')"><td>#00234</td><td>Eligibility check failing for new payer</td><td>Denver</td><td><span class="chip chip-warn">In Progress</span></td><td>2h ago</td><td>→</td></tr>
+            <tr class="row-click" onclick="openCase('00229')"><td>#00229</td><td>Clinic 2 login shows wrong account</td><td>Boulder</td><td><span class="chip chip-blue">Waiting on You</span></td><td>1d ago</td><td>→</td></tr>
+            <tr class="row-click" onclick="openCase('00221')"><td>#00221</td><td>Provisioning delay for new provider seat</td><td>Denver</td><td><span class="chip chip-blue">Received</span></td><td>2d ago</td><td>→</td></tr>
+            <tr class="row-click" onclick="openCase('00218')"><td>#00218</td><td>Report export missing modifiers</td><td>Denver</td><td><span class="chip chip-good">Resolved</span></td><td>5d ago</td><td>→</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---------------- CASE DETAIL ---------------- -->
+      <div class="view" id="view-case-detail">
+        <div class="page-head">
+          <div>
+            <a href="#" onclick="activateNav('cases-list');return false;" class="muted" style="font-size:12.5px;text-decoration:none;">← Back to cases</a>
+            <h2 id="cd-title" style="margin:6px 0 4px;">Eligibility check failing for new payer</h2>
+            <p class="muted" style="margin:0;">Case <span id="cd-num">#00234</span> · Denver Clinic · Created by Gen 3 EMR assistant escalation</p>
+          </div>
+          <span class="chip chip-warn" id="cd-status">In Progress</span>
+        </div>
+
+        <div class="card pad" style="margin-bottom:18px;">
+          <div class="journey" id="cd-journey">
+            <div class="step done"><div class="line"></div><div class="bubble">✓</div><div class="lbl">Received</div></div>
+            <div class="step done"><div class="line"></div><div class="bubble">✓</div><div class="lbl">In Review</div></div>
+            <div class="step current"><div class="line"></div><div class="bubble">3</div><div class="lbl">In Progress</div></div>
+            <div class="step"><div class="line"></div><div class="bubble">4</div><div class="lbl">Waiting on You</div></div>
+            <div class="step"><div class="line"></div><div class="bubble">5</div><div class="lbl">Resolved</div></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card pad">
+            <h3 style="margin-top:0;">Conversation</h3>
+            <div class="comment staff">
+              <div class="cavatar">T2</div>
+              <div class="body"><div class="who">Priya, Tier‑2 Support <span class="role">Agent</span></div><div class="txt">We've traced this to a stale payer ID mapping introduced with the new payer. We're updating the eligibility routing rule now — should be resolved within a business day.</div><div class="when">Today, 9:41 AM</div></div>
+            </div>
+            <div class="comment">
+              <div class="cavatar">JR</div>
+              <div class="body"><div class="who">Jordan Reyes</div><div class="txt">Thanks — this is blocking front-desk check-in for 3 patients this morning, any faster path?</div><div class="when">Today, 8:55 AM</div></div>
+            </div>
+            <div class="comment">
+              <div class="cavatar">🤖</div>
+              <div class="body"><div class="who">Gen 3 EMR Assistant <span class="role">Escalated to Tier‑2</span></div><div class="txt">I wasn't able to resolve the eligibility check error automatically, so I've created a case and looped in a support specialist.</div><div class="when">Yesterday, 4:12 PM</div></div>
+            </div>
+            <div class="field" style="margin-top:16px;">
+              <label>Add a comment</label>
+              <textarea rows="3" placeholder="Type an update for the support team..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="showToast('Comment added to case #00234')">Post comment</button>
+          </div>
+          <div>
+            <div class="card pad" style="margin-bottom:14px;">
+              <h3 style="margin-top:0;font-size:15px;">Case details</h3>
+              <div class="kv"><div class="k">Priority</div><div class="v">High</div></div>
+              <div class="kv"><div class="k">Origin</div><div class="v">Gen 3 EMR handoff</div></div>
+              <div class="kv"><div class="k">Owner</div><div class="v">Tier‑2 Support</div></div>
+              <div class="kv"><div class="k">Account</div><div class="v">Sunrise Rehab Partners</div></div>
+            </div>
+            <div class="card pad">
+              <h3 style="margin-top:0;font-size:15px;">Need this faster?</h3>
+              <p class="muted" style="font-size:12.5px;margin-top:0;">Get live help without leaving this case.</p>
+              <button class="btn btn-grad btn-block" style="margin-bottom:8px;" onclick="openAF('Hi! I can see you\'re looking at case #00234 about an eligibility check error. Want me to summarize the latest update, or connect you with a live agent?')">✨ Ask AI</button>
+              <button class="btn btn-ghost btn-block" onclick="escalateLiveAgent()">💬 Chat with a live agent</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------------- BILLING: INVOICES ---------------- -->
+      <div class="view" id="view-billing-invoices">
+        <div class="page-head">
+          <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑1, P2‑4</div><h2>Invoices</h2><p class="muted" style="margin:0;">Balances, due dates and history — presented from Revenue Cloud Billing, the system of record.</p></div>
+        </div>
+        <div class="banner banner-info"><div>ℹ️</div><div>Autopay is <b>active</b> using your Visa ····4242. Nothing due manually unless you override below.</div></div>
+        <div class="card list-card">
+          <table>
+            <tr><th>Invoice</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr>
+            <tr class="row-click" onclick="openInvoice('INV‑10456', '$1,420.00')"><td>INV‑10456</td><td>Jul 1, 2026</td><td>$1,420.00</td><td><span class="chip chip-bad">Due Jul 15</span></td><td>→</td></tr>
+            <tr class="row-click" onclick="openInvoice('INV‑10388', '$2,860.00')"><td>INV‑10388</td><td>Jun 1, 2026</td><td>$2,860.00</td><td><span class="chip chip-bad">Due now</span></td><td>→</td></tr>
+            <tr class="row-click" onclick="openInvoice('INV‑10312', '$2,860.00')"><td>INV‑10312</td><td>May 1, 2026</td><td>$2,860.00</td><td><span class="chip chip-good">Paid</span></td><td>→</td></tr>
+            <tr class="row-click" onclick="openInvoice('INV‑10245', '$2,860.00')"><td>INV‑10245</td><td>Apr 1, 2026</td><td>$2,860.00</td><td><span class="chip chip-good">Paid</span></td><td>→</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---------------- BILLING: INVOICE DETAIL / PAY ---------------- -->
+      <div class="view" id="view-invoice-detail">
+        <div class="page-head">
+          <div>
+            <a href="#" onclick="activateNav('billing-invoices');return false;" class="muted" style="font-size:12.5px;text-decoration:none;">← Back to invoices</a>
+            <h2 id="inv-title" style="margin:6px 0 4px;">Invoice INV‑10456</h2>
+            <p class="muted" style="margin:0;">Sunrise Rehab Partners · Denver Clinic</p>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="card pad">
+            <h3 style="margin-top:0;">Line items</h3>
+            <div class="kv"><div class="k">Gen 3 Enhanced — monthly subscription (7 providers)</div><div class="v">$1,190.00</div></div>
+            <div class="kv"><div class="k">RCM add-on</div><div class="v">$230.00</div></div>
+            <div class="kv" style="border-top:1.5px solid var(--border);margin-top:8px;padding-top:12px;"><div class="k"><b>Total due</b></div><div class="v" id="inv-amt" style="font-size:16px;">$1,420.00</div></div>
+          </div>
+          <div class="card pad">
+            <h3 style="margin-top:0;font-size:15px;">Pay this invoice</h3>
+            <div class="field">
+              <label>Payment method</label>
+              <div class="opt-group">
+                <button type="button" class="opt-btn selected" onclick="selectOpt(this)">Visa ····4242 (default)</button>
+                <button type="button" class="opt-btn" onclick="selectOpt(this)">Business checking ····9021 (ACH)</button>
+              </div>
+            </div>
+            <button class="btn btn-grad btn-block" onclick="payInvoice()">Pay <span id="inv-pay-amt">$1,420.00</span> now</button>
+            <p class="muted" style="font-size:11.5px;margin-top:10px;">Card data is tokenized and stored with the payment gateway — no card numbers are stored in Salesforce (P2‑6).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------------- PAYMENT METHODS ---------------- -->
+      <div class="view" id="view-billing-methods">
+        <div class="page-head">
+          <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑2</div><h2>Payment methods</h2><p class="muted" style="margin:0;">Add, remove, or set a default method. Assign a specific method to an order if needed.</p></div>
+        </div>
+        <div class="two-col">
+          <div class="card pad">
+            <div class="method-card">
+              <div class="icon">VISA</div>
+              <div class="info"><div class="num">···· ···· ···· 4242</div><div class="exp">Expires 03/28 · Default</div></div>
+              <span class="chip chip-good">Default</span>
+            </div>
+            <div class="method-card">
+              <div class="icon ach">ACH</div>
+              <div class="info"><div class="num">Business checking ···· 9021</div><div class="exp">Assigned to: RCM add-on orders</div></div>
+              <button class="btn btn-ghost btn-sm" onclick="showToast('Set as default')">Set default</button>
+            </div>
+            <div class="method-card" style="border-color:var(--bad);background:var(--bad-bg);">
+              <div class="icon" style="background:var(--bad);">MC</div>
+              <div class="info"><div class="num">···· ···· ···· 7710</div><div class="exp" style="color:var(--bad);">Expired 05/26 — update to avoid disruption</div></div>
+              <button class="btn btn-coral btn-sm" onclick="showToast('Card removed')">Remove</button>
+            </div>
+          </div>
+          <div class="card pad">
+            <h3 style="margin-top:0;font-size:15px;">Add a payment method</h3>
+            <div class="field">
+              <label>Type</label>
+              <div class="opt-group" id="pm-type-group">
+                <button type="button" class="opt-btn selected" onclick="selectPMType(this,false)">Credit / debit card</button>
+                <button type="button" class="opt-btn" onclick="selectPMType(this,true)">Bank account (ACH)</button>
+              </div>
+            </div>
+            <div class="field"><label id="pm-num-label">Card number</label><input type="text" id="pm-num-input" placeholder="4242 4242 4242 4242"></div>
+            <div class="grid-2" id="pm-extra-row">
+              <div class="field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div>
+              <div class="field"><label>CVC</label><input type="text" placeholder="123"></div>
+            </div>
+            <div class="field hidden" id="pm-routing-row"><label>Routing number</label><input type="text" placeholder="021000021"></div>
+            <button class="btn btn-primary btn-block" onclick="showToast('Payment method added')">Save method</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------------- AUTOPAY ---------------- -->
+      <div class="view" id="view-billing-autopay">
+        <div class="page-head">
+          <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑3</div><h2>Autopay</h2><p class="muted" style="margin:0;">Automatically pay invoices as they're issued.</p></div>
+        </div>
+        <div class="card pad" style="max-width:560px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+            <div><b>Autopay enrollment</b><div class="muted" style="font-size:12.5px;">Currently active</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+          </div>
+          <div class="field"><label>Autopay method</label>
+            <div class="opt-group">
+              <button type="button" class="opt-btn selected" onclick="selectOpt(this)">Visa ····4242</button>
+              <button type="button" class="opt-btn" onclick="selectOpt(this)">Business checking ····9021</button>
+            </div>
+          </div>
+          <div class="banner banner-warn" style="margin:14px 0;"><div>⚠️</div><div>Your Mastercard ····7710 on file expired 05/26. If this was your autopay method, update it to prevent a missed payment.</div></div>
+          <button class="btn btn-primary" onclick="showToast('Autopay settings saved')">Save changes</button>
+        </div>
+      </div>
+
+      <!-- ---------------- PAYMENT PLAN ---------------- -->
+      <div class="view" id="view-billing-plan">
+        <div class="page-head">
+          <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑5</div><h2>Payment plan</h2><p class="muted" style="margin:0;">Your approved plan and status — visible the same way to WebPT's internal team.</p></div>
+        </div>
+        <div class="card pad" style="max-width:640px;">
+          <div class="kv"><div class="k">Plan status</div><div class="v"><span class="chip chip-good">Active — on track</span></div></div>
+          <div class="kv"><div class="k">Original balance</div><div class="v">$6,000.00</div></div>
+          <div class="kv"><div class="k">Remaining balance</div><div class="v">$2,000.00</div></div>
+          <div class="kv"><div class="k">Installment</div><div class="v">$1,000 / month</div></div>
+          <div class="kv"><div class="k">Next payment</div><div class="v">Aug 1, 2026 · Visa ····4242</div></div>
+          <div class="kv"><div class="k">Payments remaining</div><div class="v">2 of 6</div></div>
+        </div>
+      </div>
+
+      <!-- ---------------- 12 MONTH SCHEDULE ---------------- -->
+      <div class="view" id="view-billing-schedule">
+        <div class="page-head">
+          <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑8</div><h2>Upcoming 12‑month schedule</h2><p class="muted" style="margin:0;">Projected invoice dates and amounts based on your currently contracted plan.</p></div>
+        </div>
+        <div class="card pad" id="schedule-list"></div>
+      </div>
+
+      <!-- ---------------- IMPLEMENTATION TRACKING ---------------- -->
+      <div class="view" id="view-implementation">
+        <div class="page-head">
+          <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑23</div><h2>Implementation project</h2><p class="muted" style="margin:0;">Timeline and tasks for onboarding the Denver &amp; Boulder clinics to Gen 3.</p></div>
+          <span class="chip chip-blue">62% complete</span>
+        </div>
+        <div class="card pad">
+          <div class="track-item"><div class="mk" style="background:var(--good);">✓</div><div><b>Kickoff &amp; account setup</b><div class="muted" style="font-size:12.5px;">Completed Jun 3, 2026</div></div></div>
+          <div class="track-item"><div class="mk" style="background:var(--good);">✓</div><div><b>Data migration mapping</b><div class="muted" style="font-size:12.5px;">Completed Jun 22, 2026</div></div></div>
+          <div class="track-item"><div class="mk" style="background:var(--blue);">●</div><div><b>Staff training — Denver Clinic</b><div class="muted" style="font-size:12.5px;">In progress · 2 of 3 sessions complete</div></div></div>
+          <div class="track-item"><div class="mk" style="background:#cdd4de;">○</div><div><b>Go-live — Denver Clinic</b><div class="muted" style="font-size:12.5px;">Scheduled Jul 28, 2026</div></div></div>
+          <div class="track-item"><div class="mk" style="background:#cdd4de;">○</div><div><b>Staff training — Boulder Clinic</b><div class="muted" style="font-size:12.5px;">Scheduled Aug 4, 2026</div></div></div>
+        </div>
+      </div>
+
+      <!-- ---------------- UPGRADE / SELF-SERVE FOR EXISTING CUSTOMERS ---------------- -->
+      <div class="view" id="view-upgrade">
+        <div class="page-head">
+          <div><div class="eyebrow phase-tag phase-2">Phase 2 · Self-serve</div><h2>Buy more from Gen 3</h2><p class="muted" style="margin:0;">Add providers or products to your existing account, powered by CPQ / Revenue Cloud.</p></div>
+        </div>
+        <div class="card pad" style="text-align:center;padding:40px;">
+          <p class="muted">As an existing customer, adding seats or products routes you into the same self‑serve buy flow used by new customers (P2‑8–P2‑14), pre-filled with your account context.</p>
+          <button class="btn btn-grad" onclick="goPublic(); startBuy('existing');">Continue to plan selection →</button>
+        </div>
+      </div>
+
+      <!-- ---------------- KNOWLEDGE / DOCUMENTATION ---------------- -->
+      <div class="view" id="view-knowledge">
+        <div class="page-head">
+          <div><div class="eyebrow">Reference</div><h2>Knowledge &amp; documentation</h2><p class="muted" style="margin:0;">Help content lives in your Gen 3 EMR — not in Experience Cloud (R6, R14).</p></div>
+        </div>
+        <div class="banner banner-info">
+          <div>ℹ️</div>
+          <div>This portal intentionally doesn't host a separate knowledge base. Product how-tos, coding guidance, and article search all live in the Gen 3 EMR's in-product help — so there's one place to maintain content and one place to search it. What you can do here is jump straight to it, or ask the AI assistant.</div>
+        </div>
+        <div class="two-col">
+          <div class="card pad">
+            <h3 style="margin-top:0;font-size:15px;">Search help content</h3>
+            <div class="field">
+              <input type="text" id="kb-search" placeholder="Try “eligibility check error” or “add a payment plan”…">
+            </div>
+            <button class="btn btn-primary" onclick="kbSearch()">Search</button>
+            <div id="kb-result" class="muted" style="font-size:12.5px;margin-top:12px;"></div>
+
+            <h3 style="font-size:15px;margin:24px 0 6px;">Popular topics</h3>
+            <div class="track-item"><div class="mk" style="background:var(--blue);">📄</div><div><b>Resolving eligibility check errors</b><div class="muted" style="font-size:12.5px;">Gen 3 EMR Help Center</div></div></div>
+            <div class="track-item"><div class="mk" style="background:var(--blue);">📄</div><div><b>Setting up autopay &amp; payment plans</b><div class="muted" style="font-size:12.5px;">Gen 3 EMR Help Center</div></div></div>
+            <div class="track-item"><div class="mk" style="background:var(--blue);">📄</div><div><b>Adding a new provider seat</b><div class="muted" style="font-size:12.5px;">Gen 3 EMR Help Center</div></div></div>
+            <div class="track-item"><div class="mk" style="background:var(--blue);">📄</div><div><b>Understanding your case status</b><div class="muted" style="font-size:12.5px;">Gen 3 EMR Help Center</div></div></div>
+          </div>
+          <div class="card pad">
+            <h3 style="margin-top:0;font-size:15px;">Open the Help Center</h3>
+            <p class="muted" style="font-size:12.5px;">Full documentation, release notes, and the searchable knowledge base are inside your Gen 3 EMR.</p>
+            <button class="btn btn-grad btn-block" style="margin-bottom:8px;" onclick="showToast('Opening Gen 3 EMR Help Center in a new tab')">📚 Open Gen 3 EMR Help Center →</button>
+            <button class="btn btn-ghost btn-block" onclick="openAF('Hi! I can answer quick questions here, or point you to the right EMR help article — what do you need?')">✨ Ask AI instead</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------------- PROFILE ---------------- -->
+      <div class="view" id="view-profile">
+        <div class="page-head">
+          <div><div class="eyebrow">Account</div><h2>Your profile</h2><p class="muted" style="margin:0;">Identity and access are managed by WebPT's SSO — this page reflects, but does not edit, your identity provider record.</p></div>
+        </div>
+        <div class="card pad" style="display:flex;align-items:center;gap:18px;margin-bottom:20px;">
+          <div class="avatar avatar-lg"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" fill="#DCE6F5"/><path d="M9 40c0-8.5 6.5-13.5 11-13.5s11 5 11 13.5" fill="#3F68E0"/><circle cx="20" cy="17" r="7.5" fill="#F0BE97"/><path d="M12.2 15.5c0-6 3.6-10 7.8-10s7.8 4 7.8 10c-1.8-1.6-4.6-2.6-7.8-2.6s-6 1-7.8 2.6z" fill="#4A3323"/></svg></div>
+          <div>
+            <div style="font-weight:700;font-size:16px;">Jordan Reyes</div>
+            <div class="muted" style="font-size:13px;">Practice Administrator · Sunrise Rehab Partners</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="card pad">
+            <h3 style="margin-top:0;font-size:15px;">Contact details</h3>
+            <div class="kv"><div class="k">Name</div><div class="v">Jordan Reyes</div></div>
+            <div class="kv"><div class="k">Email</div><div class="v">jordan@sunriserehab.com</div></div>
+            <div class="kv"><div class="k">Phone</div><div class="v">(720) 555‑0148</div></div>
+            <div class="kv"><div class="k">Role</div><div class="v">Practice Administrator</div></div>
+            <div class="kv"><div class="k">Organization</div><div class="v">Sunrise Rehab Partners</div></div>
+            <div class="kv"><div class="k">Primary clinic</div><div class="v">Denver Clinic</div></div>
+            <div class="kv"><div class="k">Access level</div><div class="v">Full portal access — cases &amp; billing</div></div>
+
+            <h3 style="font-size:15px;margin:22px 0 4px;">Notification preferences</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--border);">
+              <div style="font-size:13.5px;">Case status updates</div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--border);">
+              <div style="font-size:13.5px;">Invoice &amp; billing alerts</div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
+              <div style="font-size:13.5px;">Product &amp; release announcements</div><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+            </div>
+          </div>
+          <div class="card pad">
+            <h3 style="margin-top:0;font-size:15px;">Sign-in &amp; security</h3>
+            <p class="muted" style="font-size:12.5px;">Authentication is handled entirely by WebPT's identity provider (SSO). There's no separate Support Hub password to manage (R11).</p>
+            <div class="kv"><div class="k">Last sign-in</div><div class="v">Today, 8:41 AM</div></div>
+            <div class="kv"><div class="k">Auth method</div><div class="v">SAML SSO (JIT)</div></div>
+            <button class="btn btn-ghost btn-block" style="margin-top:14px;" onclick="showToast('Redirecting to your identity provider')">Manage sign-in at WebPT IdP →</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ PUBLIC BUY JOURNEY (webpt.com → Experience Cloud) ============================================================ -->
+<div id="public-app">
+
+  <!-- Landing -->
+  <div class="view active" id="pub-view-landing">
+    <div class="pub-hero">
+      <div class="eyebrow pub-eyebrow">webpt.com → Experience Cloud</div>
+      <h1>The next-generation EMR &amp; RCM platform for rehab therapy, ready in minutes.</h1>
+      <p>Buy Gen 3 online, or explore a free sandbox with sample data first — no commitment required.</p>
+
+      <div class="pub-cta-row">
+        <button class="btn btn-grad" onclick="startBuy('new')">Buy now →</button>
+        <button class="btn btn-ghost" onclick="startSandbox()">Explore the sandbox</button>
+      </div>
+    </div>
+    <div class="pub-stats">
+      <div class="pub-stats-inner">
+        <div><div class="n">50%</div><div class="l">More patients attracted</div></div>
+        <div><div class="n">3x</div><div class="l">Faster documentation</div></div>
+        <div><div class="n">20%</div><div class="l">Revenue growth</div></div>
+      </div>
+    </div>
+
+    <!-- Feature tabs — mirrors webpt.com's home feature-tabs pattern, mapped to the 4 RFP use cases -->
+    <div class="pub-tabs">
+      <h2>One portal, four ways to work with WebPT</h2>
+      <div class="pub-tabs-nav">
+        <button class="active" onclick="showFeatureTab(this,'ft-cases')">Case Visibility</button>
+        <button onclick="showFeatureTab(this,'ft-billing')">Billing</button>
+        <button onclick="showFeatureTab(this,'ft-buy')">Self-Serve Buy</button>
+        <button onclick="showFeatureTab(this,'ft-ai')">AI &amp; Live Agent</button>
+      </div>
+
+      <div class="pub-tab-card active" id="ft-cases">
+        <div>
+          <div class="eyebrow pub-eyebrow">Phase 1 · Beta</div>
+          <h3>See every case, the moment it moves</h3>
+          <p class="muted">Your embedded EMR assistant handles first-line questions and creates a case only when a human needs to step in — so what you see here is always current.</p>
+          <ul>
+            <li>✅ Plain-language status: Received → In Review → In Progress → Resolved</li>
+            <li>✅ Organization-wide visibility across your Gen 3 account hierarchy</li>
+            <li>✅ Comment directly on a case without leaving the portal</li>
+          </ul>
+        </div>
+        <div class="pub-tab-visual">🎫</div>
+      </div>
+
+      <div class="pub-tab-card" id="ft-billing">
+        <div>
+          <div class="eyebrow pub-eyebrow">Phase 2 · GA</div>
+          <h3>Pay your way, always in view</h3>
+          <p class="muted">Invoices, autopay, and payment plans in one logged-in view — backed by the same gateway and billing platform your finance team already trusts.</p>
+          <ul>
+            <li>✅ One-time payments and stored payment methods (card or ACH)</li>
+            <li>✅ Autopay with expiring-card alerts before they become a problem</li>
+            <li>✅ 12-month forecast of upcoming invoices</li>
+          </ul>
+        </div>
+        <div class="pub-tab-visual">💳</div>
+      </div>
+
+      <div class="pub-tab-card" id="ft-buy">
+        <div>
+          <div class="eyebrow pub-eyebrow">Phase 2 · GA</div>
+          <h3>From click to provisioned, in minutes</h3>
+          <p class="muted">Small practices buy instantly online; anything more complex is routed to a specialist with your context intact — no starting over.</p>
+          <ul>
+            <li>✅ TIN and email verified in under 2 minutes</li>
+            <li>✅ Live pricing pulled straight from Revenue Cloud</li>
+            <li>✅ Try a sandbox first, convert to a real account anytime</li>
+          </ul>
+        </div>
+        <div class="pub-tab-visual">🛒</div>
+      </div>
+
+      <div class="pub-tab-card" id="ft-ai">
+        <div>
+          <div class="eyebrow pub-eyebrow">Phase 1 &amp; 2</div>
+          <h3>Help, wherever you are</h3>
+          <p class="muted">Ask AI for quick answers on billing or your account, or escalate straight to a live specialist — with the conversation's context carried along.</p>
+          <ul>
+            <li>✅ Ask AI assistant embedded across the portal and buy flow</li>
+            <li>✅ One-click handoff to a live Tier-2 agent or sales rep</li>
+            <li>✅ No repeating yourself — context follows the handoff</li>
+          </ul>
+        </div>
+        <div class="pub-tab-visual">✨</div>
+      </div>
+    </div>
+
+    <!-- Testimonials — mirrors webpt.com's quote carousel, fictional quotes for this prototype -->
+    <div class="pub-quotes">
+      <h2>What early Members are saying</h2>
+      <div class="quote-carousel" id="quote-carousel">
+        <div class="quote-slide active">
+          <div class="txt">Buying Gen 3 took less time than my coffee break. I answered a few questions and my sandbox was ready before I'd finished the cup.</div>
+          <div class="who">Dana Whitfield, DPT — Crestline Rehab Partners</div>
+        </div>
+        <div class="quote-slide">
+          <div class="txt">Our billing contact can finally see invoices and payment plans without needing an EMR login. That alone was worth the switch.</div>
+          <div class="who">Marcus Ibe — Office Manager, Southbend PT &amp; Wellness</div>
+        </div>
+        <div class="quote-slide">
+          <div class="txt">We're a 6-clinic group, so we expected a sales call — and got one, fast, with our whole plan already filled in. No repeating ourselves.</div>
+          <div class="who">Priya Anand, PT — Anand Multi-Specialty Rehab</div>
+        </div>
+        <div class="quote-slide">
+          <div class="txt">The case status view finally matches how support actually works. I know exactly what's happening without calling in.</div>
+          <div class="who">Tomas Reyes — Clinic Director, Reyes Physical Therapy</div>
+        </div>
+      </div>
+      <div class="quote-nav">
+        <button onclick="quoteNav(-1)" aria-label="Previous">←</button>
+        <div class="quote-dots" id="quote-dots"></div>
+        <button onclick="quoteNav(1)" aria-label="Next">→</button>
+      </div>
+    </div>
+
+    <div class="pub-body">
+      <div class="stat-row">
+        <div class="card stat-card"><div class="num">&lt;5</div><div class="lbl">Providers? Self‑serve in minutes</div></div>
+        <div class="card stat-card"><div class="num">5+</div><div class="lbl">Providers or RCM? We'll pair you with a specialist</div></div>
+        <div class="card stat-card"><div class="num">2‑min</div><div class="lbl">TIN &amp; email verification</div></div>
+        <div class="card stat-card"><div class="num">Instant</div><div class="lbl">Provisioning on payment</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Qualify: email + TIN -->
+  <div class="view" id="pub-view-qualify">
+    <div class="wizard-shell">
+      <div class="wizard-progress"><div class="seg on"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
+      <div class="eyebrow phase-tag phase-2">P2‑9 · Buyer validation</div>
+      <h2>Let's verify your business</h2>
+      <p class="muted">We validate your Tax ID (TIN) and business email using WebPT's existing Salesforce validation service — the same one used across Quote‑to‑Cash.</p>
+      <div class="card pad">
+        <div class="field"><label>Business email</label><input type="email" id="q-email" placeholder="you@yourclinic.com" value="jordan@sunriserehab.com"></div>
+        <div class="field"><label>Tax Identification Number (TIN)</label><input type="text" id="q-tin" placeholder="XX-XXXXXXX" value="84-3391022"></div>
+        <div class="field"><label># of providers</label>
+          <div class="opt-group" id="q-providers-group">
+            <button type="button" class="opt-btn" data-value="1" onclick="selectOpt(this)">1</button>
+            <button type="button" class="opt-btn" data-value="2-4" onclick="selectOpt(this)">2‑4</button>
+            <button type="button" class="opt-btn selected" data-value="5-9" onclick="selectOpt(this)">5‑9</button>
+            <button type="button" class="opt-btn" data-value="10+" onclick="selectOpt(this)">10+</button>
+          </div>
+        </div>
+        <button class="btn btn-grad btn-block" onclick="runValidation()">Validate &amp; continue</button>
+        <div id="q-result" style="margin-top:14px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plans -->
+  <div class="view" id="pub-view-plans">
+    <div class="wizard-shell" style="max-width:920px;">
+      <div class="wizard-progress"><div class="seg on"></div><div class="seg on"></div><div class="seg"></div><div class="seg"></div></div>
+      <div class="eyebrow phase-tag phase-2">P2‑10 · Rendered live from CPQ / Revenue Cloud</div>
+      <h2>Choose your plan</h2>
+      <div class="grid-2" style="grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:18px;">
+        <div class="plan-card" onclick="selectPlan(this,'Standard','$690')"><h3>Standard</h3><div class="price">$690<span>/mo</span></div><ul><li>✓ Core EMR + RCM</li><li>✓ Up to 5 providers</li><li>✓ Case &amp; billing portal</li></ul></div>
+        <div class="plan-card selected" onclick="selectPlan(this,'Enhanced','$1,190')"><div class="rec">Most popular</div><h3>Enhanced</h3><div class="price">$1,190<span>/mo</span></div><ul><li>✓ Everything in Standard</li><li>✓ Advanced analytics</li><li>✓ Priority Tier‑2 support</li></ul></div>
+        <div class="plan-card" onclick="selectPlan(this,'Enhanced + RCM','$1,420')"><h3>Enhanced + RCM</h3><div class="price">$1,420<span>/mo</span></div><ul><li>✓ Everything in Enhanced</li><li>✓ Full RCM add-on</li><li>✓ Dedicated CSM</li></ul></div>
+      </div>
+      <button class="btn btn-grad btn-block" style="margin-top:22px;" onclick="continueFromPlans()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- Checkout -->
+  <div class="view" id="pub-view-checkout">
+    <div class="wizard-shell">
+      <div class="wizard-progress"><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg"></div></div>
+      <div class="eyebrow phase-tag phase-2">P2‑13 · Gateway tokenizes &amp; charges</div>
+      <h2>Payment</h2>
+      <div class="card pad">
+        <div class="kv"><div class="k">Plan selected</div><div class="v" id="co-plan">Enhanced — $1,190/mo</div></div>
+        <div class="kv" style="margin-bottom:16px;"><div class="k">Billed</div><div class="v">Monthly</div></div>
+
+        <div class="field hidden" id="co-saved-wrap">
+          <label>Payment method</label>
+          <div class="opt-group" id="co-method-group">
+            <button type="button" class="opt-btn selected" onclick="selectCheckoutMethod(this,false)">Visa ····4242 on file</button>
+            <button type="button" class="opt-btn" onclick="selectCheckoutMethod(this,false)">Business checking ····9021 on file</button>
+            <button type="button" class="opt-btn" onclick="selectCheckoutMethod(this,true)">+ Use a new card</button>
+          </div>
+        </div>
+
+        <div id="co-new-card-fields">
+          <div class="field"><label>Card number</label><input type="text" placeholder="4242 4242 4242 4242"></div>
+          <div class="grid-2"><div class="field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div><div class="field"><label>CVC</label><input type="text" placeholder="123"></div></div>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:500;color:var(--navy-soft);margin-top:2px;">
+            <input type="checkbox" id="co-save-card" checked style="width:auto;">
+            Save this card to my account for future payments
+          </label>
+        </div>
+
+        <button class="btn btn-grad btn-block" style="margin-top:14px;" onclick="finishPurchase()">Confirm &amp; pay</button>
+        <p class="muted" style="font-size:11.5px;margin-top:10px;text-align:center;">No unpaid provisioning — access is granted once payment is confirmed. Card data is tokenized by the payment gateway; Salesforce never stores a full card number (P2‑6).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation / provisioning -->
+  <div class="view" id="pub-view-confirm">
+    <div class="wizard-shell">
+      <div class="eyebrow phase-tag phase-2">P2‑14 · EMR provisioning API</div>
+      <h2>You're all set 🎉</h2>
+      <p class="muted">We've emitted your purchase to the Gen 3 EMR provisioning payload. Here's what happens next:</p>
+      <div class="card pad">
+        <div class="track-item"><div class="mk" style="background:var(--good);">✓</div><div><b>Payment confirmed</b><div class="muted" style="font-size:12.5px;">$1,190.00 charged to card ending 4242</div></div></div>
+        <div class="track-item"><div class="mk" style="background:var(--good);">✓</div><div><b>Account, Opportunity, Quote &amp; Order created</b><div class="muted" style="font-size:12.5px;">via existing CPQ / Revenue Cloud APIs</div></div></div>
+        <div class="track-item"><div class="mk" style="background:var(--blue);">●</div><div><b>Provisioning your EMR environment</b><div class="muted" style="font-size:12.5px;">Usually takes under 10 minutes</div></div></div>
+        <div class="track-item"><div class="mk" style="background:#cdd4de;">○</div><div><b>Access &amp; credentialing email</b><div class="muted" style="font-size:12.5px;">Sent to jordan@sunriserehab.com — first login provisions Support Hub via SSO</div></div></div>
+      </div>
+      <button class="btn btn-grad btn-block" style="margin-top:16px;" onclick="finishAndGoHome()">Go to your Support Hub →</button>
+    </div>
+  </div>
+
+  <!-- Assisted path -->
+  <div class="view" id="pub-view-assisted">
+    <div class="wizard-shell">
+      <div class="eyebrow phase-tag phase-2">P2‑11, P2‑20, P2‑21 · Sales-assisted path</div>
+      <h2>Let's get you the right setup</h2>
+      <p class="muted">Based on your provider count / RCM needs, this account is best served with a specialist — your context carries over, no restart needed.</p>
+      <div class="card pad">
+        <div class="kv"><div class="k">Email</div><div class="v" id="as-email">jordan@sunriserehab.com</div></div>
+        <div class="kv"><div class="k">Providers</div><div class="v" id="as-providers">5‑9</div></div>
+        <div class="kv" style="margin-bottom:16px;"><div class="k">Plan interest</div><div class="v" id="as-plan">Enhanced + RCM</div></div>
+        <button class="btn btn-grad btn-block" style="margin-bottom:8px;" onclick="showToast('Rep notified — live chat connecting')">💬 Chat with a rep now</button>
+        <button class="btn btn-ghost btn-block" onclick="showToast('Demo scheduling opened')">📅 Schedule a demo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sandbox -->
+  <div class="view" id="pub-view-sandbox">
+    <div class="wizard-shell">
+      <div class="eyebrow phase-tag phase-2">P2‑15, P2‑16 · Sandbox = dummy data</div>
+      <h2>Try the sandbox</h2>
+      <p class="muted">A lighter signup — no full provisioning, no live patient data.</p>
+      <div class="card pad">
+        <div class="field"><label>Name</label><input type="text" placeholder="Jordan Reyes"></div>
+        <div class="field"><label>Work email</label><input type="email" placeholder="you@yourclinic.com"></div>
+        <button class="btn btn-grad btn-block" onclick="finishSandbox()">Launch sandbox →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="pub-view-sandbox-ready">
+    <div class="wizard-shell">
+      <h2>Your sandbox is ready 🧪</h2>
+      <p class="muted">Explore Gen 3 with sample clinic data. Attribution and lifecycle are tracked via HubSpot ↔ Salesforce sync (P2‑18) so we can follow up at the right time.</p>
+      <div class="card pad" style="text-align:center;padding:34px;">
+        <button class="btn btn-grad" onclick="startBuy('sandbox-convert')">Ready to buy for real? Convert now →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================ STANDARD FOOTER (all states) ============================================================ -->
+<footer class="gfooter">
+  <div class="gfooter-inner">
+    <div class="gfooter-cols">
+      <div>
+        <h4>Support Hub</h4>
+        <a onclick="activateNav('dashboard')">Home</a>
+        <a onclick="activateNav('cases-list')">Cases</a>
+        <a onclick="activateNav('billing-invoices')">Billing</a>
+        <a onclick="activateNav('implementation')">Implementation</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a onclick="activateNav('knowledge')">Knowledge &amp; Documentation</a>
+        <a onclick="return false;">Practice Guides</a>
+        <a onclick="return false;">Success Stories</a>
+        <a onclick="showToast('Support contact opened');">Contact Support</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a onclick="return false;">About WebPT</a>
+        <a onclick="return false;">Careers</a>
+        <a onclick="return false;">Partners</a>
+        <a onclick="return false;">Press &amp; Awards</a>
+        <div style="margin-top:14px;">
+          <button class="btn btn-ghost btn-sm" style="color:#fff;border-color:rgba(255,255,255,.3);" onclick="doLogout()">Sign in</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gfooter-info">
+      <div class="gfooter-contact">
+        <h4>Contact</h4>
+        <div>Phone: <a href="tel:866-221-1870">866-221-1870</a></div>
+        <div>Fax: <a href="tel:866-225-0057">866-225-0057</a></div>
+        <div>111 W Monroe St. #200, Phoenix, AZ 85003</div>
+        <div>Press: <a href="mailto:pr@webpt.com">pr@webpt.com</a></div>
+      </div>
+      <div class="gfooter-social">
+        <a onclick="return false;" aria-label="LinkedIn" title="LinkedIn">in</a>
+        <a onclick="return false;" aria-label="X (Twitter)" title="X">𝕏</a>
+        <a onclick="return false;" aria-label="YouTube" title="YouTube">▶</a>
+        <a onclick="return false;" aria-label="Facebook" title="Facebook">f</a>
+      </div>
+    </div>
+
+    <div class="gfooter-legal-wrap">
+      <span class="brand-logo footer-mark gfooter-legal-logo"><svg viewBox="0 0 140 36" xmlns="http://www.w3.org/2000/svg"><path d="M137.725 10.7515L137.393 12.6119C137.327 12.98 136.994 13.25 136.611 13.25H132.475L130.085 26.4886C130.014 26.8568 129.687 27.1267 129.303 27.1267H126.504C126.015 27.1267 125.637 26.6948 125.723 26.2235L128.068 13.2549H125.677C125.566 13.2549 125.465 13.1862 125.43 13.0782C125.092 12.1014 124.502 11.1098 123.72 10.2704C123.569 10.1035 123.69 9.84339 123.917 9.84339H128.713L130.272 1.08637C130.337 0.718218 130.67 0.448242 131.053 0.448242H133.857C134.347 0.448242 134.725 0.880203 134.639 1.34652L133.136 9.84339H136.954C137.443 9.84339 137.821 10.2753 137.736 10.7466L137.725 10.7515Z" fill="#1F2933"/><path d="M139.502 24.978C139.502 25.2971 139.446 25.5916 139.33 25.8567C139.214 26.1217 139.058 26.3475 138.861 26.5341C138.664 26.7206 138.432 26.8679 138.17 26.9709C137.908 27.074 137.636 27.128 137.348 27.128C137.03 27.128 136.738 27.074 136.476 26.966C136.213 26.858 135.981 26.7059 135.795 26.5144C135.603 26.323 135.457 26.0972 135.346 25.837C135.24 25.5769 135.185 25.2922 135.185 24.9879C135.185 24.6688 135.24 24.3743 135.356 24.1092C135.472 23.8441 135.628 23.6183 135.825 23.4318C136.022 23.2453 136.254 23.098 136.516 22.9949C136.778 22.8919 137.056 22.8428 137.348 22.8428C137.641 22.8428 137.908 22.8919 138.17 22.9949C138.432 23.098 138.659 23.2453 138.861 23.4318C139.058 23.6183 139.214 23.8441 139.33 24.1092C139.446 24.3743 139.502 24.6639 139.502 24.9879V24.978ZM139.169 24.978C139.169 24.6982 139.123 24.4381 139.028 24.2025C138.932 23.9669 138.806 23.7656 138.639 23.5938C138.473 23.422 138.281 23.2944 138.059 23.2011C137.837 23.1078 137.6 23.0637 137.343 23.0637C137.086 23.0637 136.844 23.1127 136.622 23.2011C136.4 23.2944 136.203 23.4269 136.037 23.5938C135.87 23.7656 135.739 23.9669 135.649 24.2025C135.558 24.4381 135.507 24.6982 135.507 24.978C135.507 25.2431 135.548 25.4885 135.633 25.7241C135.719 25.9549 135.84 26.1561 136.002 26.3328C136.163 26.5095 136.355 26.6421 136.576 26.7451C136.803 26.8482 137.056 26.8973 137.343 26.8973C137.6 26.8973 137.837 26.8531 138.059 26.7599C138.281 26.6666 138.473 26.5341 138.639 26.3672C138.806 26.1954 138.937 25.9941 139.028 25.7634C139.123 25.5278 139.169 25.2726 139.169 24.9829V24.978ZM137.005 25.9303H136.692V24.0847H137.414C137.641 24.0847 137.817 24.1288 137.933 24.2074C138.049 24.2908 138.11 24.4283 138.11 24.6148C138.11 24.7817 138.064 24.9044 137.968 24.978C137.873 25.0517 137.757 25.1007 137.615 25.1155L138.145 25.9254H137.792L137.303 25.1351H137.01V25.9254L137.005 25.9303ZM137.353 24.8848C137.414 24.8848 137.469 24.8848 137.52 24.8799C137.575 24.8799 137.62 24.8651 137.661 24.8406C137.701 24.821 137.731 24.7915 137.757 24.7522C137.782 24.713 137.792 24.6639 137.792 24.5952C137.792 24.5412 137.777 24.4921 137.752 24.4626C137.726 24.4283 137.691 24.4037 137.651 24.389C137.61 24.3694 137.565 24.3595 137.52 24.3546C137.469 24.3546 137.424 24.3497 137.378 24.3497H137V24.8897H137.348L137.353 24.8848Z" fill="#1F2933"/><path d="M57.7325 9.82229H61.1114C61.5149 9.82229 61.7671 10.2543 61.5754 10.5929L52.7095 26.708C52.5733 26.9584 52.301 27.1204 52.0135 27.1204H49.4364C49.0481 27.1204 48.7203 26.8406 48.6547 26.4675L47.051 16.8711C46.9653 16.3802 46.2895 16.2821 46.0575 16.7238L40.8882 26.6933C40.752 26.9535 40.4797 27.1253 40.1822 27.1253H37.6303C37.2521 27.1253 36.9242 26.8504 36.8536 26.4921L33.6462 10.4506C33.5806 10.1315 33.8328 9.8272 34.1656 9.8272H37.595C37.9833 9.8272 38.3162 10.1168 38.3767 10.4899L39.7737 19.4138C39.8543 19.9046 40.5352 20.0126 40.7672 19.566L45.5834 10.2543C45.7145 9.99409 45.9919 9.82229 46.2895 9.82229H49.033C49.4213 9.82229 49.7542 10.107 49.8147 10.4801L51.2116 19.404C51.2923 19.8948 51.9732 20.0028 52.2052 19.5561L57.0214 10.2444C57.1525 9.98428 57.4299 9.81738 57.7275 9.81738L57.7325 9.82229Z" fill="#1F2933"/><path d="M79.4398 18.3106C79.4196 18.4432 79.3944 18.5904 79.3641 18.7328C79.228 19.4593 78.5673 19.9747 77.8108 19.9747H65.8786C65.5559 19.9747 65.3037 20.2594 65.3491 20.5637C65.6668 22.5861 67.2655 23.6709 69.6661 23.6709C71.3707 23.6709 73.1106 23.0377 74.3815 21.9283C74.679 21.6681 75.1279 21.6681 75.4254 21.9234L76.8224 23.126C77.1603 23.4156 77.1855 23.9212 76.8728 24.2354C74.795 26.3706 71.6682 27.5536 68.7079 27.5536C63.4226 27.5536 60.0386 23.8525 61.0271 18.453C62.0508 12.9406 66.8822 9.38672 71.9759 9.38672C77.0695 9.38672 80.4182 12.9013 79.4247 18.3008H79.4297L79.4398 18.3106ZM74.7799 16.9804C75.0825 16.9804 75.3245 16.735 75.3144 16.4404C75.2237 14.3984 73.625 13.2106 71.3505 13.2106C69.2273 13.2106 67.2907 14.1383 66.2014 16.249C66.0249 16.5877 66.2922 16.9902 66.6805 16.9902H74.7849H74.7799V16.9804Z" fill="#1F2933"/><path d="M101.457 18.463C100.469 23.9754 95.7536 27.5636 91.0786 27.5636C88.915 27.5636 86.5548 26.6408 85.6823 24.7902L85.3747 26.4984C85.3091 26.8568 84.9914 27.1267 84.6081 27.1267H81.7789C81.2998 27.1267 80.9266 26.6997 81.0123 26.2383L85.5562 1.106C85.6268 0.728035 85.9647 0.448242 86.3632 0.448242H89.1621C89.6412 0.448242 90.0144 0.875294 89.9287 1.33671L87.9618 12.1799C89.4799 10.3293 92.1427 9.40652 94.3869 9.40652C99.0619 9.40652 102.486 12.9211 101.457 18.4728V18.463ZM92.9395 13.3923C90.3927 13.3923 87.4626 15.3902 86.8927 18.4237C86.3581 21.4572 88.4107 23.568 91.1088 23.568C93.8069 23.568 96.505 21.31 97.0396 18.4237C97.5742 15.5374 95.6729 13.3923 92.9344 13.3923H92.9395Z" fill="#1F2933"/><path d="M123.678 18.5C122.689 24.0124 118.014 27.5663 113.339 27.5663C111.095 27.5663 108.816 26.6778 107.903 24.8273L106.082 34.9194C106.012 35.2876 105.684 35.5576 105.301 35.5576H102.497C102.007 35.5576 101.629 35.1256 101.715 34.6544L106.077 10.4842C106.148 10.1161 106.476 9.84607 106.859 9.84607H109.663C110.152 9.84607 110.53 10.278 110.445 10.7493L110.187 12.1777C111.705 10.2928 114.404 9.4043 116.577 9.4043C121.252 9.4043 124.712 12.9532 123.683 18.5049L123.678 18.5ZM115.16 13.3901C112.462 13.3901 109.683 15.4616 109.113 18.5C108.579 21.5728 110.788 23.5657 113.329 23.5657C116.063 23.5657 118.726 21.3814 119.26 18.5C119.754 15.653 117.893 13.3901 115.155 13.3901H115.16Z" fill="#1F2933"/><path d="M24.477 0.0472934L24.4174 0.037065C23.2517 -0.163006 22.14 0.594627 21.9344 1.72929L17.6959 25.1262C17.4903 26.2608 18.2687 27.3429 19.4345 27.5429L19.4941 27.5532C20.6598 27.7532 21.7715 26.9956 21.977 25.8609L26.2156 2.46403C26.4212 1.32938 25.6428 0.247364 24.477 0.0472934Z" fill="#FC5C6F"/><path d="M14.0922 8.46636L14.0376 8.45699C12.8718 8.25692 11.7601 9.01455 11.5546 10.1492L7.31597 33.5461C7.11042 34.6808 7.88882 35.7628 9.05458 35.9629L9.10921 35.9722C10.275 36.1723 11.3866 35.4147 11.5922 34.28L15.8308 10.8831C16.0364 9.74845 15.258 8.66643 14.0922 8.46636Z" fill="#7A5BF7"/><path d="M6.81102 0.0648717L6.75142 0.0546431C5.58566 -0.145428 4.47399 0.612205 4.26843 1.74686L0.0298392 25.1438C-0.175716 26.2784 0.602685 27.3604 1.76845 27.5605L1.82805 27.5707C2.99381 27.7708 4.10548 27.0132 4.31103 25.8785L8.54963 2.48161C8.75518 1.34695 7.97678 0.264942 6.81102 0.0648717Z" fill="#5383FE"/></svg></span>
+      <div class="gfooter-legal-text">
+        <div>© 2026 WebPT, Inc. · Gen 3 Support Hub — clickable UX prototype</div>
+        <div class="gfooter-legal-links">
+          <a onclick="return false;">Terms and Conditions</a><span class="sep">|</span><a onclick="return false;">Privacy Policy</a><span class="sep">|</span><a onclick="return false;">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================ Agentforce widget (shared) ============================================================ -->
+<button class="af-bubble" onclick="toggleAF()" id="af-toggle">✨</button>
+<div class="af-panel" id="af-panel">
+  <div class="af-head">
+    <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;">✨</div>
+    <div><div class="t">Ask AI</div><div class="s" id="af-subtitle">Member assistant · Support Hub</div></div>
+    <button onclick="toggleAF()">✕</button>
+  </div>
+  <div class="af-body" id="af-body"></div>
+  <div class="af-quick" id="af-quick"></div>
+  <div class="af-input">
+    <input type="text" id="af-input-text" placeholder="Ask a question...">
+    <button onclick="sendAF()">➤</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- view / nav plumbing ---------------- */
+const NAV_GROUP = {
+  'dashboard':'home',
+  'cases-list':'cases', 'case-detail':'cases',
+  'billing-invoices':'billing', 'invoice-detail':'billing', 'billing-methods':'billing',
+  'billing-autopay':'billing', 'billing-plan':'billing', 'billing-schedule':'billing',
+  'implementation':'product', 'upgrade':'product',
+  'profile':null
+};
+function activateNav(viewId){
+  document.querySelectorAll('#app .view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+viewId).classList.add('active');
+  const group = NAV_GROUP.hasOwnProperty(viewId) ? NAV_GROUP[viewId] : viewId;
+  document.querySelectorAll('.appnav [data-group]').forEach(n=>n.classList.toggle('active', n.dataset.group===group));
+  document.querySelectorAll('.appnav .nav-top').forEach(n=>{
+    if(n.parentElement.classList.contains('nav-drop')) n.classList.toggle('active', n.parentElement.dataset.group===group);
+  });
+  closeAllDrops();
+  window.scrollTo(0,0);
+}
+function toggleDrop(e, el){
+  e.stopPropagation();
+  const drop = el.closest('.nav-drop');
+  const isOpen = drop.classList.contains('open');
+  closeAllOverlays();
+  if(!isOpen) drop.classList.add('open');
+}
+function closeAllDrops(){
+  document.querySelectorAll('.nav-drop.open').forEach(d=>d.classList.remove('open'));
+}
+function toggleUserMenu(e){
+  e.stopPropagation();
+  const panel = document.getElementById('user-menu');
+  const isOpen = panel.classList.contains('open');
+  closeAllOverlays();
+  if(!isOpen) panel.classList.add('open');
+}
+function closeUserMenu(){
+  document.getElementById('user-menu').classList.remove('open');
+}
+function toggleNotifPanel(e){
+  e.stopPropagation();
+  const panel = document.getElementById('notif-panel');
+  const isOpen = panel.classList.contains('open');
+  closeAllOverlays();
+  if(!isOpen){
+    panel.classList.add('open');
+    const dot = document.getElementById('notif-dot');
+    if(dot) dot.style.display = 'none';
+  }
+}
+function closeNotifPanel(){
+  document.getElementById('notif-panel').classList.remove('open');
+}
+function closeAllOverlays(){
+  closeAllDrops();
+  closeUserMenu();
+  closeNotifPanel();
+}
+document.addEventListener('click', closeAllOverlays);
+
+function showPublicView(id){
+  document.querySelectorAll('#public-app .view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function setHeaderMode(mode){
+  document.getElementById('gh-actions-anon').classList.toggle('hidden', mode!=='anon');
+  document.getElementById('gh-actions-public').classList.toggle('hidden', mode!=='public');
+  document.getElementById('gh-actions-member').classList.toggle('hidden', mode!=='member');
+  document.getElementById('app-nav').classList.toggle('active', mode==='member');
+}
+function doLogin(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').classList.add('active');
+  setHeaderMode('member');
+  activateNav('dashboard');
+  afSetContext('member');
+}
+function doLogout(){
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('login-screen').style.display='flex';
+  setHeaderMode('anon');
+}
+function goPublic(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('public-app').classList.add('active');
+  showPublicView('pub-view-landing');
+  setHeaderMode('public');
+  afSetContext('public');
+  initQuoteCarousel();
+}
+function backToLogin(){
+  document.getElementById('public-app').classList.remove('active');
+  document.getElementById('login-screen').style.display='flex';
+  setHeaderMode('anon');
+}
+function openProfile(){
+  document.querySelectorAll('#app .view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-profile').classList.add('active');
+  document.querySelectorAll('.appnav [data-group]').forEach(n=>n.classList.remove('active'));
+  window.scrollTo(0,0);
+}
+
+/* ---------------- button-style option groups (replace native selects) ---------------- */
+function selectOpt(el){
+  el.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectPMType(el, isACH){
+  selectOpt(el);
+  document.getElementById('pm-num-label').textContent = isACH ? 'Account number' : 'Card number';
+  document.getElementById('pm-num-input').placeholder = isACH ? '000123456789' : '4242 4242 4242 4242';
+  document.getElementById('pm-extra-row').classList.toggle('hidden', isACH);
+  document.getElementById('pm-routing-row').classList.toggle('hidden', !isACH);
+}
+function kbSearch(){
+  const q = document.getElementById('kb-search').value.trim();
+  const resultEl = document.getElementById('kb-result');
+  if(!q){ resultEl.textContent = 'Type something to search.'; return; }
+  resultEl.innerHTML = 'Searching would open your Gen 3 EMR help center for “<b>'+q+'</b>” — Experience Cloud doesn\u2019t index this content itself (R6). Try <b>Ask AI</b> for a quick answer instead.';
+}
+
+/* ---------------- public landing page: feature tabs ---------------- */
+function showFeatureTab(el, id){
+  document.querySelectorAll('.pub-tabs-nav button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.pub-tab-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ---------------- public landing page: testimonial carousel ---------------- */
+let quoteIndex = 0;
+let quoteTimer = null;
+function initQuoteCarousel(){
+  const slides = document.querySelectorAll('.quote-slide');
+  const dotsWrap = document.getElementById('quote-dots');
+  if(!slides.length || dotsWrap.children.length) return;
+  slides.forEach((s,i)=>{
+    const dot = document.createElement('span');
+    if(i===0) dot.classList.add('active');
+    dot.onclick = ()=>goToQuote(i);
+    dotsWrap.appendChild(dot);
+  });
+  quoteTimer = setInterval(()=>quoteNav(1), 6000);
+}
+function goToQuote(i){
+  const slides = document.querySelectorAll('.quote-slide');
+  const dots = document.querySelectorAll('#quote-dots span');
+  slides.forEach(s=>s.classList.remove('active'));
+  dots.forEach(d=>d.classList.remove('active'));
+  quoteIndex = (i + slides.length) % slides.length;
+  slides[quoteIndex].classList.add('active');
+  dots[quoteIndex].classList.add('active');
+}
+function quoteNav(dir){
+  clearInterval(quoteTimer);
+  goToQuote(quoteIndex + dir);
+  quoteTimer = setInterval(()=>quoteNav(1), 6000);
+}
+
+/* ---------------- toast ---------------- */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = '✅ '+msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ---------------- cases ---------------- */
+const CASES = {
+  '00234': {title:'Eligibility check failing for new payer', status:'In Progress', chip:'chip-warn', step:2},
+  '00229': {title:'Clinic 2 login shows wrong account', status:'Waiting on You', chip:'chip-blue', step:3},
+  '00218': {title:'Report export missing modifiers', status:'Resolved', chip:'chip-good', step:4}
+};
+function openCase(num){
+  const c = CASES[num] || CASES['00234'];
+  document.getElementById('cd-title').textContent = c.title;
+  document.getElementById('cd-num').textContent = '#'+num;
+  const chip = document.getElementById('cd-status');
+  chip.textContent = c.status;
+  chip.className = 'chip '+c.chip;
+  activateNav('case-detail');
+}
+function escalateLiveAgent(){
+  toggleAF(true);
+  afSetContext('live');
+  afPush('system','Connecting you to Omni‑Channel live agent support...');
+  setTimeout(()=>afPush('bot','Hi Jordan, this is Sam from WebPT Tier‑2 support — I have your case #00234 context in front of me. How can I help?'), 900);
+}
+
+/* ---------------- billing ---------------- */
+function openInvoice(num, amt){
+  document.getElementById('inv-title').textContent = 'Invoice '+num;
+  document.getElementById('inv-amt').textContent = amt;
+  document.getElementById('inv-pay-amt').textContent = amt;
+  activateNav('invoice-detail');
+}
+function payInvoice(){
+  showToast('Payment submitted — receipt emailed');
+  setTimeout(()=>activateNav('billing-invoices'), 700);
+}
+
+/* build 12-month schedule */
+(function(){
+  const months = ['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'];
+  const base = 1420;
+  let html='';
+  months.forEach((m,i)=>{
+    const amt = base + (i%3===0?230:0);
+    const pct = Math.round((amt/1650)*100);
+    html += `<div class="sched-bar-row"><div class="mo">${m} '26</div><div class="sched-bar-track"><div class="sched-bar-fill" style="width:${pct}%;"></div></div><div class="amt">$${amt.toLocaleString()}</div></div>`;
+  });
+  document.getElementById('schedule-list').innerHTML = html;
+})();
+
+/* ---------------- public buy flow state ---------------- */
+let BUY_MODE = 'new';
+function startBuy(mode){
+  BUY_MODE = mode;
+  document.getElementById('public-app').classList.add('active');
+  showPublicView('pub-view-qualify');
+}
+function startSandbox(){ showPublicView('pub-view-sandbox'); }
+function finishSandbox(){
+  showToast('Sandbox request received');
+  showPublicView('pub-view-sandbox-ready');
+}
+function runValidation(){
+  const email = document.getElementById('q-email').value;
+  const tin = document.getElementById('q-tin').value;
+  const providers = document.querySelector('#q-providers-group .opt-btn.selected').dataset.value;
+  const resultEl = document.getElementById('q-result');
+  resultEl.innerHTML = '<p class="muted" style="font-size:12.5px;">Validating TIN via IRS/Avalara API…</p>';
+  setTimeout(()=>{
+    const eligible = providers === '1' || providers === '2-4';
+    if(eligible){
+      resultEl.innerHTML = '<div class="banner banner-info" style="margin:0;"><div>✅</div><div>TIN and email verified. You qualify for instant self‑serve purchase.</div></div>';
+      setTimeout(()=>showPublicView('pub-view-plans'), 900);
+    } else {
+      document.getElementById('as-email').textContent = email;
+      document.getElementById('as-providers').textContent = providers;
+      resultEl.innerHTML = '<div class="banner banner-warn" style="margin:0;"><div>ℹ️</div><div>Verified — with '+providers+' providers, we will pair you with a specialist rather than self‑serve checkout.</div></div>';
+      setTimeout(()=>showPublicView('pub-view-assisted'), 1100);
+    }
+  }, 1000);
+}
+let SELECTED_PLAN = {name:'Enhanced', price:'$1,190'};
+function selectPlan(el, name, price){
+  document.querySelectorAll('.plan-card').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  SELECTED_PLAN = {name, price};
+}
+function continueFromPlans(){
+  document.getElementById('co-plan').textContent = SELECTED_PLAN.name+' — '+SELECTED_PLAN.price+'/mo';
+  document.getElementById('as-plan').textContent = SELECTED_PLAN.name;
+  const hasStoredCards = (BUY_MODE === 'existing');
+  document.getElementById('co-saved-wrap').classList.toggle('hidden', !hasStoredCards);
+  document.getElementById('co-new-card-fields').classList.toggle('hidden', hasStoredCards);
+  if(hasStoredCards){
+    document.querySelectorAll('#co-method-group .opt-btn').forEach(b=>b.classList.remove('selected'));
+    document.querySelector('#co-method-group .opt-btn').classList.add('selected');
+  }
+  showPublicView('pub-view-checkout');
+}
+function selectCheckoutMethod(el, isNew){
+  selectOpt(el);
+  document.getElementById('co-new-card-fields').classList.toggle('hidden', !isNew);
+}
+function finishPurchase(){
+  showPublicView('pub-view-confirm');
+}
+function finishAndGoHome(){
+  document.getElementById('public-app').classList.remove('active');
+  doLogin();
+  showToast('Welcome to your Gen 3 Support Hub');
+}
+
+/* ---------------- Agentforce / live-agent widget ---------------- */
+let AF_CONTEXT = 'public';
+const AF_SCRIPTS = {
+  public: {subtitle:'Buying assistant · Public', greet:'Hi! I\'m the Gen 3 buying assistant. I can answer plan questions or help you get qualified — I only use public marketing content, never account data.', quick:['What plans are available?','Do I qualify for self-serve?','Talk to a human']},
+  member: {subtitle:'Member assistant · Support Hub', greet:'Hi Jordan 👋 I can help with invoices, billing, or your cases — grounded only in what you\'re authorized to see.', quick:['Why is my invoice higher this month?','Show my open cases','Talk to a live agent']},
+  live: {subtitle:'Live agent · Tier‑2 Support', greet:'', quick:['Send screenshot','This is resolved, thanks']}
+};
+function afSetContext(ctx){
+  AF_CONTEXT = ctx;
+  const cfg = AF_SCRIPTS[ctx];
+  document.getElementById('af-subtitle').textContent = cfg.subtitle;
+  document.getElementById('af-body').innerHTML = '';
+  if(ctx!=='live') afPush('bot', cfg.greet);
+  const q = document.getElementById('af-quick');
+  q.innerHTML='';
+  cfg.quick.forEach(t=>{
+    const b=document.createElement('button');
+    b.textContent=t;
+    b.onclick=()=>{afPush('user',t); respondAF(t);};
+    q.appendChild(b);
+  });
+}
+function openAF(msg){
+  toggleAF(true);
+  afSetContext('member');
+  setTimeout(()=>afPush('bot', msg), 300);
+}
+function toggleAF(forceOpen){
+  const p = document.getElementById('af-panel');
+  if(forceOpen){ p.classList.add('open'); return; }
+  p.classList.toggle('open');
+  if(p.classList.contains('open') && document.getElementById('af-body').children.length===0){
+    afSetContext(document.getElementById('app').classList.contains('active') ? 'member' : 'public');
+  }
+}
+function afPush(who, text){
+  const body = document.getElementById('af-body');
+  const div = document.createElement('div');
+  div.className = 'af-msg '+who;
+  div.textContent = text;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+function sendAF(){
+  const input = document.getElementById('af-input-text');
+  const val = input.value.trim();
+  if(!val) return;
+  afPush('user', val);
+  input.value='';
+  respondAF(val);
+}
+function respondAF(text){
+  setTimeout(()=>{
+    if(/human|live agent|talk to/i.test(text)){
+      afPush('system','Escalating to a live agent, preserving this conversation context…');
+      setTimeout(()=>afPush('bot', AF_CONTEXT==='public' ? 'Connecting you with a sales specialist now.' : 'Connecting you with Tier‑2 support now.'), 800);
+    } else if(/plan/i.test(text)){
+      afPush('bot','We offer Standard, Enhanced, and Enhanced + RCM, priced by provider count and priced from Revenue Cloud in real time. Want me to open the plan selector?');
+    } else if(/qualify/i.test(text)){
+      afPush('bot','Self‑serve checkout is available for organizations under 5 providers on standard/enhanced plans. Larger or multi‑clinic orgs are routed to a specialist.');
+    } else if(/invoice/i.test(text)){
+      afPush('bot','Your June invoice includes the RCM add‑on that started this cycle — that is the $230 difference. Want to see the line items?');
+    } else if(/case/i.test(text)){
+      afPush('bot','You have 2 open cases: #00234 (In Progress) and #00229 (Waiting on You). Want me to open one?');
+    } else {
+      afPush('bot','Got it — let me look into that for you.');
+    }
+  }, 700);
+}
+</script>
+</body>
+</html>
