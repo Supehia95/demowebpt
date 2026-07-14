@@ -70,6 +70,17 @@
   .chip-bad{background:var(--bad-bg);color:var(--bad);}
   .chip-blue{background:#eaf0ff;color:var(--blue-dark);}
   .chip-purple{background:#f0ecff;color:var(--purple);}
+  .chip-closed{background:#eef1f6;color:var(--muted);}
+
+  .org-filter-wrap{position:relative;}
+  .org-filter-panel{
+    display:none;position:absolute;top:38px;right:0;background:#fff;border:1px solid var(--border);border-radius:12px;
+    box-shadow:var(--shadow);min-width:260px;padding:8px;z-index:260;
+  }
+  .org-filter-panel.open{display:block;}
+  .org-filter-panel label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;font-size:13px;font-weight:600;color:var(--navy-soft);cursor:pointer;}
+  .org-filter-panel label:hover{background:var(--bg);}
+  .org-filter-panel input{width:auto;}
   .phase-tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.03em;}
   .phase-1{background:#eaf0ff;color:var(--blue-dark);}
   .phase-2{background:#f0ecff;color:var(--purple);}
@@ -88,6 +99,35 @@
   }
   .toast.show{opacity:1;bottom:34px;}
 
+  .loader-overlay{
+    position:fixed;inset:0;background:rgba(244,246,251,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:900;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .loader-overlay.hidden{display:none;}
+  .loader-card{text-align:center;background:#fff;padding:30px 40px;border-radius:16px;box-shadow:0 12px 40px rgba(31,41,51,.18);}
+  .spinner{
+    width:42px;height:42px;border-radius:50%;border:4px solid #e3e7ef;border-top-color:var(--blue);
+    margin:0 auto 16px;animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loader-text{font-size:14.5px;font-weight:700;color:var(--navy);}
+  .loader-sub{font-size:12.5px;color:var(--muted);margin-top:6px;}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(31,41,51,.55);z-index:950;
+    display:flex;align-items:center;justify-content:center;padding:24px;
+  }
+  .modal-overlay.hidden{display:none;}
+  .modal-card{
+    background:#fff;border-radius:16px;width:100%;max-width:920px;height:min(720px,85vh);
+    display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.35);
+  }
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);gap:12px;}
+  .modal-close{background:var(--bg);border:none;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--navy-soft);flex-shrink:0;}
+  .modal-close:hover{background:var(--border);}
+  #demo-iframe{flex:1;width:100%;border:none;}
+  .modal-fallback{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px;text-align:center;}
+
   /* ---------- LOGIN ---------- */
   #login-screen{
     min-height:calc(100vh - 64px - 62px);display:flex;align-items:center;justify-content:center;
@@ -105,6 +145,12 @@
   #login-screen h1{font-size:21px;margin:0 0 6px;}
   #login-screen p.sub{font-size:13.5px;color:var(--muted);margin:0 0 26px;}
   .sso-note{font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.5;}
+  #idp-screen{
+    min-height:calc(100vh - 64px - 62px);display:flex;align-items:center;justify-content:center;
+    background:#eef1f6;padding:40px 20px;
+  }
+  .idp-card{border-top:4px solid #1a73e8;}
+  .idp-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#1a73e8;background:#e8f0fe;padding:4px 10px;border-radius:6px;margin-bottom:14px;}
 
   /* ---------- APP SHELL (horizontal nav, no sidebar) ---------- */
   #app{display:none;min-height:calc(100vh - 64px);}
@@ -217,17 +263,26 @@
   }
   .opt-btn:hover{border-color:var(--blue);color:var(--blue-dark);}
   .opt-btn.selected{border-color:var(--blue);background:#eaf0ff;color:var(--blue-dark);}
+  .card-brand-badge{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10.5px;font-weight:800;letter-spacing:.03em;color:var(--blue-dark);background:#eaf0ff;padding:4px 8px;border-radius:5px;pointer-events:none;}
 
   .content{padding:26px 30px 90px;max-width:1180px;width:100%;margin:0 auto;}
   .view{display:none;}
   .view.active{display:block;}
   .page-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;gap:16px;flex-wrap:wrap;}
   .page-head h2{font-size:23px;margin:2px 0 4px;}
+  .home-hero{
+    background:var(--grad);border-radius:18px;padding:32px 30px;display:flex;justify-content:space-between;
+    align-items:center;flex-wrap:wrap;gap:20px;margin-bottom:20px;position:relative;overflow:hidden;
+  }
+  .home-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 15%, rgba(255,255,255,.20), transparent 50%);}
+  .home-hero-text, .home-hero-actions{position:relative;z-index:1;}
+  .home-hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
   .banner{
     display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;margin-bottom:20px;font-size:13.5px;
   }
   .banner-warn{background:var(--warn-bg);color:#7a5a06;}
   .banner-info{background:#eaf0ff;color:var(--blue-dark);}
+  .banner-good{background:var(--good-bg);color:var(--good);}
   .banner button.dismiss{margin-left:auto;background:none;border:none;cursor:pointer;color:inherit;font-size:16px;opacity:.6;}
 
   /* journey / status stepper — signature element */
@@ -257,6 +312,8 @@
   @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
 
   .kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--border);font-size:13.5px;}
+  .sub-divider{margin:16px 0 4px;padding-top:14px;border-top:1.5px solid var(--border);}
+  .sub-divider span{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
   .kv:last-child{border-bottom:none;}
   .kv .k{color:var(--muted);}
   .kv .v{font-weight:600;}
@@ -301,6 +358,11 @@
   .plan-card .price span{font-size:13px;font-weight:500;color:var(--muted);}
   .plan-card ul{list-style:none;padding:0;margin:14px 0 0;font-size:12.5px;color:var(--navy-soft);}
   .plan-card li{padding:4px 0;display:flex;gap:7px;}
+  .plan-bestfor{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4;font-style:italic;}
+  .plan-help-note{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    background:#f7f5ff;border:1px solid #e3ddfa;border-radius:12px;padding:14px 18px;margin-top:18px;
+  }
 
   /* PUBLIC BUY SITE CHROME */
   #public-app{display:none;min-height:100vh;background:#fff;}
@@ -360,7 +422,7 @@
   .quote-dots span{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;display:inline-block;}
   .quote-dots span.active{background:var(--blue);}
 
-  .wizard-shell{max-width:640px;margin:40px auto;padding:0 20px;}
+  .wizard-shell{max-width:640px;margin:0 auto;padding:40px 20px;}
   .wizard-progress{display:flex;gap:6px;margin-bottom:26px;}
   .wizard-progress .seg{flex:1;height:5px;border-radius:4px;background:var(--border);}
   .wizard-progress .seg.on{background:var(--grad);}
@@ -402,6 +464,19 @@
   .sched-bar-track{flex:1;height:10px;background:#eef1f6;border-radius:6px;overflow:hidden;}
   .sched-bar-fill{height:100%;background:var(--grad);}
   .sched-bar-row .amt{width:74px;text-align:right;font-weight:700;}
+
+  .sched-chart{display:flex;align-items:flex-end;gap:8px;height:170px;padding:26px 2px 0;border-bottom:2px solid var(--border);}
+  .sched-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0;}
+  .sched-col .amt-lbl{font-size:10px;font-weight:700;color:var(--navy-soft);margin-bottom:6px;white-space:nowrap;}
+  .sched-col .bar{width:62%;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg, var(--blue), var(--purple));opacity:.78;transition:.15s opacity;}
+  .sched-col:hover .bar{opacity:1;}
+  .sched-col.current .bar{opacity:1;box-shadow:0 0 0 3px rgba(83,131,254,.18);}
+  .sched-col.current .amt-lbl{color:var(--blue-dark);}
+  .sched-labels{display:flex;gap:8px;padding:8px 2px 0;}
+  .sched-labels div{flex:1;text-align:center;font-size:10.5px;color:var(--muted);font-weight:600;min-width:0;}
+  .sched-labels div.current{color:var(--navy);font-weight:800;}
+  .sched-legend{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:11.5px;color:var(--muted);}
+  .sched-legend .dot{width:9px;height:9px;border-radius:3px;background:var(--grad);}
 </style>
 </head>
 <body>
@@ -412,10 +487,13 @@
   <div class="gheader-title">Support Hub</div>
   <div class="topbar-spacer"></div>
 
-  <div id="gh-actions-anon" class="gh-actions"></div>
+  <div id="gh-actions-anon" class="gh-actions hidden">
+    <button class="btn btn-ghost btn-sm" onclick="goPublic()">← Back to website</button>
+  </div>
 
-  <div id="gh-actions-public" class="gh-actions hidden">
-    <button class="btn btn-ghost btn-sm" onclick="backToLogin()">← Back to sign-in</button>
+  <div id="gh-actions-public" class="gh-actions">
+    <button class="btn btn-ghost btn-sm hidden" id="pub-back-btn" onclick="backToLogin()">← Back to Support Hub</button>
+    <button class="btn btn-primary btn-sm" id="pub-login-btn" onclick="showLoginScreen()">Login</button>
   </div>
 
   <div id="gh-actions-member" class="gh-actions hidden">
@@ -461,7 +539,7 @@
         <a onclick="activateNav('billing-invoices')">Invoices</a>
         <a onclick="activateNav('billing-methods')">Payment Methods</a>
         <a onclick="activateNav('billing-autopay')">Autopay</a>
-        <a onclick="activateNav('billing-plan')">Payment Plan</a>
+        <a onclick="activateNav('billing-plan')">Subscriptions</a>
         <a onclick="activateNav('billing-schedule')">12‑Month Schedule</a>
       </div>
     </div>
@@ -472,7 +550,7 @@
         <a onclick="activateNav('implementation')">Implementation</a>
       </div>
     </div>
-    <div class="nav-top" data-group="knowledge" onclick="activateNav('knowledge')">Knowledge</div>
+    <div class="nav-top" data-group="knowledge" onclick="activateNav('knowledge')">Help</div>
   </div>
 </nav>
 
@@ -482,9 +560,28 @@
     <div class="brandmark"><span class="brand-logo"><svg viewBox="0 0 140 36" xmlns="http://www.w3.org/2000/svg"><path d="M137.725 10.7515L137.393 12.6119C137.327 12.98 136.994 13.25 136.611 13.25H132.475L130.085 26.4886C130.014 26.8568 129.687 27.1267 129.303 27.1267H126.504C126.015 27.1267 125.637 26.6948 125.723 26.2235L128.068 13.2549H125.677C125.566 13.2549 125.465 13.1862 125.43 13.0782C125.092 12.1014 124.502 11.1098 123.72 10.2704C123.569 10.1035 123.69 9.84339 123.917 9.84339H128.713L130.272 1.08637C130.337 0.718218 130.67 0.448242 131.053 0.448242H133.857C134.347 0.448242 134.725 0.880203 134.639 1.34652L133.136 9.84339H136.954C137.443 9.84339 137.821 10.2753 137.736 10.7466L137.725 10.7515Z" fill="#1F2933"/><path d="M139.502 24.978C139.502 25.2971 139.446 25.5916 139.33 25.8567C139.214 26.1217 139.058 26.3475 138.861 26.5341C138.664 26.7206 138.432 26.8679 138.17 26.9709C137.908 27.074 137.636 27.128 137.348 27.128C137.03 27.128 136.738 27.074 136.476 26.966C136.213 26.858 135.981 26.7059 135.795 26.5144C135.603 26.323 135.457 26.0972 135.346 25.837C135.24 25.5769 135.185 25.2922 135.185 24.9879C135.185 24.6688 135.24 24.3743 135.356 24.1092C135.472 23.8441 135.628 23.6183 135.825 23.4318C136.022 23.2453 136.254 23.098 136.516 22.9949C136.778 22.8919 137.056 22.8428 137.348 22.8428C137.641 22.8428 137.908 22.8919 138.17 22.9949C138.432 23.098 138.659 23.2453 138.861 23.4318C139.058 23.6183 139.214 23.8441 139.33 24.1092C139.446 24.3743 139.502 24.6639 139.502 24.9879V24.978ZM139.169 24.978C139.169 24.6982 139.123 24.4381 139.028 24.2025C138.932 23.9669 138.806 23.7656 138.639 23.5938C138.473 23.422 138.281 23.2944 138.059 23.2011C137.837 23.1078 137.6 23.0637 137.343 23.0637C137.086 23.0637 136.844 23.1127 136.622 23.2011C136.4 23.2944 136.203 23.4269 136.037 23.5938C135.87 23.7656 135.739 23.9669 135.649 24.2025C135.558 24.4381 135.507 24.6982 135.507 24.978C135.507 25.2431 135.548 25.4885 135.633 25.7241C135.719 25.9549 135.84 26.1561 136.002 26.3328C136.163 26.5095 136.355 26.6421 136.576 26.7451C136.803 26.8482 137.056 26.8973 137.343 26.8973C137.6 26.8973 137.837 26.8531 138.059 26.7599C138.281 26.6666 138.473 26.5341 138.639 26.3672C138.806 26.1954 138.937 25.9941 139.028 25.7634C139.123 25.5278 139.169 25.2726 139.169 24.9829V24.978ZM137.005 25.9303H136.692V24.0847H137.414C137.641 24.0847 137.817 24.1288 137.933 24.2074C138.049 24.2908 138.11 24.4283 138.11 24.6148C138.11 24.7817 138.064 24.9044 137.968 24.978C137.873 25.0517 137.757 25.1007 137.615 25.1155L138.145 25.9254H137.792L137.303 25.1351H137.01V25.9254L137.005 25.9303ZM137.353 24.8848C137.414 24.8848 137.469 24.8848 137.52 24.8799C137.575 24.8799 137.62 24.8651 137.661 24.8406C137.701 24.821 137.731 24.7915 137.757 24.7522C137.782 24.713 137.792 24.6639 137.792 24.5952C137.792 24.5412 137.777 24.4921 137.752 24.4626C137.726 24.4283 137.691 24.4037 137.651 24.389C137.61 24.3694 137.565 24.3595 137.52 24.3546C137.469 24.3546 137.424 24.3497 137.378 24.3497H137V24.8897H137.348L137.353 24.8848Z" fill="#1F2933"/><path d="M57.7325 9.82229H61.1114C61.5149 9.82229 61.7671 10.2543 61.5754 10.5929L52.7095 26.708C52.5733 26.9584 52.301 27.1204 52.0135 27.1204H49.4364C49.0481 27.1204 48.7203 26.8406 48.6547 26.4675L47.051 16.8711C46.9653 16.3802 46.2895 16.2821 46.0575 16.7238L40.8882 26.6933C40.752 26.9535 40.4797 27.1253 40.1822 27.1253H37.6303C37.2521 27.1253 36.9242 26.8504 36.8536 26.4921L33.6462 10.4506C33.5806 10.1315 33.8328 9.8272 34.1656 9.8272H37.595C37.9833 9.8272 38.3162 10.1168 38.3767 10.4899L39.7737 19.4138C39.8543 19.9046 40.5352 20.0126 40.7672 19.566L45.5834 10.2543C45.7145 9.99409 45.9919 9.82229 46.2895 9.82229H49.033C49.4213 9.82229 49.7542 10.107 49.8147 10.4801L51.2116 19.404C51.2923 19.8948 51.9732 20.0028 52.2052 19.5561L57.0214 10.2444C57.1525 9.98428 57.4299 9.81738 57.7275 9.81738L57.7325 9.82229Z" fill="#1F2933"/><path d="M79.4398 18.3106C79.4196 18.4432 79.3944 18.5904 79.3641 18.7328C79.228 19.4593 78.5673 19.9747 77.8108 19.9747H65.8786C65.5559 19.9747 65.3037 20.2594 65.3491 20.5637C65.6668 22.5861 67.2655 23.6709 69.6661 23.6709C71.3707 23.6709 73.1106 23.0377 74.3815 21.9283C74.679 21.6681 75.1279 21.6681 75.4254 21.9234L76.8224 23.126C77.1603 23.4156 77.1855 23.9212 76.8728 24.2354C74.795 26.3706 71.6682 27.5536 68.7079 27.5536C63.4226 27.5536 60.0386 23.8525 61.0271 18.453C62.0508 12.9406 66.8822 9.38672 71.9759 9.38672C77.0695 9.38672 80.4182 12.9013 79.4247 18.3008H79.4297L79.4398 18.3106ZM74.7799 16.9804C75.0825 16.9804 75.3245 16.735 75.3144 16.4404C75.2237 14.3984 73.625 13.2106 71.3505 13.2106C69.2273 13.2106 67.2907 14.1383 66.2014 16.249C66.0249 16.5877 66.2922 16.9902 66.6805 16.9902H74.7849H74.7799V16.9804Z" fill="#1F2933"/><path d="M101.457 18.463C100.469 23.9754 95.7536 27.5636 91.0786 27.5636C88.915 27.5636 86.5548 26.6408 85.6823 24.7902L85.3747 26.4984C85.3091 26.8568 84.9914 27.1267 84.6081 27.1267H81.7789C81.2998 27.1267 80.9266 26.6997 81.0123 26.2383L85.5562 1.106C85.6268 0.728035 85.9647 0.448242 86.3632 0.448242H89.1621C89.6412 0.448242 90.0144 0.875294 89.9287 1.33671L87.9618 12.1799C89.4799 10.3293 92.1427 9.40652 94.3869 9.40652C99.0619 9.40652 102.486 12.9211 101.457 18.4728V18.463ZM92.9395 13.3923C90.3927 13.3923 87.4626 15.3902 86.8927 18.4237C86.3581 21.4572 88.4107 23.568 91.1088 23.568C93.8069 23.568 96.505 21.31 97.0396 18.4237C97.5742 15.5374 95.6729 13.3923 92.9344 13.3923H92.9395Z" fill="#1F2933"/><path d="M123.678 18.5C122.689 24.0124 118.014 27.5663 113.339 27.5663C111.095 27.5663 108.816 26.6778 107.903 24.8273L106.082 34.9194C106.012 35.2876 105.684 35.5576 105.301 35.5576H102.497C102.007 35.5576 101.629 35.1256 101.715 34.6544L106.077 10.4842C106.148 10.1161 106.476 9.84607 106.859 9.84607H109.663C110.152 9.84607 110.53 10.278 110.445 10.7493L110.187 12.1777C111.705 10.2928 114.404 9.4043 116.577 9.4043C121.252 9.4043 124.712 12.9532 123.683 18.5049L123.678 18.5ZM115.16 13.3901C112.462 13.3901 109.683 15.4616 109.113 18.5C108.579 21.5728 110.788 23.5657 113.329 23.5657C116.063 23.5657 118.726 21.3814 119.26 18.5C119.754 15.653 117.893 13.3901 115.155 13.3901H115.16Z" fill="#1F2933"/><path d="M24.477 0.0472934L24.4174 0.037065C23.2517 -0.163006 22.14 0.594627 21.9344 1.72929L17.6959 25.1262C17.4903 26.2608 18.2687 27.3429 19.4345 27.5429L19.4941 27.5532C20.6598 27.7532 21.7715 26.9956 21.977 25.8609L26.2156 2.46403C26.4212 1.32938 25.6428 0.247364 24.477 0.0472934Z" fill="#FC5C6F"/><path d="M14.0922 8.46636L14.0376 8.45699C12.8718 8.25692 11.7601 9.01455 11.5546 10.1492L7.31597 33.5461C7.11042 34.6808 7.88882 35.7628 9.05458 35.9629L9.10921 35.9722C10.275 36.1723 11.3866 35.4147 11.5922 34.28L15.8308 10.8831C16.0364 9.74845 15.258 8.66643 14.0922 8.46636Z" fill="#7A5BF7"/><path d="M6.81102 0.0648717L6.75142 0.0546431C5.58566 -0.145428 4.47399 0.612205 4.26843 1.74686L0.0298392 25.1438C-0.175716 26.2784 0.602685 27.3604 1.76845 27.5605L1.82805 27.5707C2.99381 27.7708 4.10548 27.0132 4.31103 25.8785L8.54963 2.48161C8.75518 1.34695 7.97678 0.264942 6.81102 0.0648717Z" fill="#5383FE"/></svg></span><span class="gen3">GEN 3</span></div>
     <h1>Sign in to Support Hub</h1>
     <p class="sub">Authenticate with your WebPT organization identity.</p>
-    <button class="btn btn-primary btn-block" style="margin-bottom:10px;" onclick="doLogin()">🔐 Sign in with WebPT SSO</button>
+    <button class="btn btn-primary btn-block" style="margin-bottom:10px;" onclick="goToIdp()">🔐 Sign in with WebPT SSO</button>
     <button class="btn btn-ghost btn-block" onclick="goPublic()">Not a member yet? Explore buying Gen 3 →</button>
     <div class="sso-note">Simulates SAML JIT provisioning (P1‑1 / R11): first successful SSO login provisions Experience Cloud access automatically. WebPT owns the IdP — Truffle configures EC as the service provider only.</div>
+  </div>
+</div>
+
+<!-- ============================================================ MOCK IDENTITY PROVIDER (Okta/Auth0 redirect) ============================================================ -->
+<div id="idp-screen" class="hidden">
+  <div class="card login-card idp-card">
+    <div class="idp-badge">🔒 auth.webpt.com</div>
+    <h1 style="font-size:19px;">WebPT Identity Provider</h1>
+    <p class="sub">You've been redirected here from Support Hub to authenticate — this screen belongs to WebPT's IdP, not Experience Cloud.</p>
+    <div class="field" style="text-align:left;">
+      <label>Username</label>
+      <input type="text" value="jordan.reyes@sunriserehab.com">
+    </div>
+    <div class="field" style="text-align:left;">
+      <label>Password</label>
+      <input type="password" value="••••••••••">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="idpSignIn()">Sign In</button>
+    <div class="sso-note">This screen is a stand-in for your real IdP (Okta/Auth0/SAML). Truffle configures Experience Cloud as the service provider only — WebPT owns and hosts this login.</div>
   </div>
 </div>
 
@@ -495,14 +592,22 @@
 
       <!-- ---------------- DASHBOARD ---------------- -->
       <div class="view active" id="view-dashboard">
+        <div class="home-hero">
+          <div class="home-hero-text">
+            <div class="eyebrow" style="color:rgba(255,255,255,.85);">Home</div>
+            <h2 style="color:#fff;margin:4px 0 6px;">Good morning, Jordan 👋</h2>
+            <p style="color:rgba(255,255,255,.85);margin:0;">Sunrise Rehab Partners · Gen 3 account hierarchy</p>
+          </div>
+          <div class="home-hero-actions">
+            <button class="btn" style="background:#fff;color:var(--blue-dark);" onclick="activateNav('cases-list')">🎫 View support cases</button>
+            <button class="btn btn-ghost" style="border-color:rgba(255,255,255,.45);color:#fff;" onclick="activateNav('billing-invoices')">💳 Billing</button>
+            <button class="btn btn-ghost" style="border-color:rgba(255,255,255,.45);color:#fff;" onclick="openAF('Hi Jordan! What can I help you with today?')">✨ Ask AI</button>
+          </div>
+        </div>
         <div class="banner banner-warn">
           <div>⚠️</div>
           <div><b>Known issue:</b> Eligibility exports for the Denver Clinic may show yesterday's data while we resolve a sync delay with RCM. No action needed — this refreshes automatically. <span class="muted">Posted 7:12 AM</span></div>
           <button class="dismiss" onclick="this.closest('.banner').remove()">✕</button>
-        </div>
-        <div class="page-head">
-          <div><div class="eyebrow">Home</div><h2>Good morning, Jordan 👋</h2><p class="muted" style="margin:0;">Sunrise Rehab Partners · Gen 3 account hierarchy</p></div>
-          <button class="btn btn-grad" onclick="activateNav('cases-list')">🎫 View support cases</button>
         </div>
 
         <div class="stat-row">
@@ -538,17 +643,25 @@
         <div class="page-head">
           <div><div class="eyebrow phase-tag phase-1">Phase 1 · P1‑2, P1‑3</div><h2>Support cases</h2><p class="muted" style="margin:0;">Visible cases are created by your embedded EMR assistant when it escalates to Tier‑2 support (P1‑4). You don't open cases directly here.</p></div>
         </div>
-        <div class="tabs">
-          <div class="tab active">My organization (4)</div>
-          <div class="tab">My cases only (2)</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:2px;">
+          <div class="tabs" style="margin-bottom:0;">
+            <div class="tab active" onclick="setCaseTab('org', this)">My organizations (<span id="tab-org-count">0</span>)</div>
+            <div class="tab" onclick="setCaseTab('mine', this)">My cases only (<span id="tab-mine-count">0</span>)</div>
+          </div>
+          <div class="org-filter-wrap">
+            <button class="btn btn-ghost btn-sm" onclick="toggleOrgFilter(event)">🏢 Organizations <span class="care">▾</span></button>
+            <div class="org-filter-panel" id="org-filter-panel" onclick="event.stopPropagation()">
+              <div class="muted" style="font-size:11px;font-weight:700;text-transform:uppercase;padding:2px 8px 6px;">Filter by organization</div>
+              <label><input type="checkbox" value="Sunrise Rehab Partners" checked onchange="applyCaseFilters()"> Sunrise Rehab Partners</label>
+              <label><input type="checkbox" value="Confluent Health – Texas PTS" checked onchange="applyCaseFilters()"> Confluent Health – Texas PTS</label>
+              <div class="muted" style="font-size:11px;margin:6px 8px 2px;">You're affiliated with multiple orgs — cases from each can appear here (P1‑3).</div>
+            </div>
+          </div>
         </div>
         <div class="card list-card">
           <table>
-            <tr><th>Case</th><th>Subject</th><th>Clinic</th><th>Status</th><th>Updated</th><th></th></tr>
-            <tr class="row-click" onclick="openCase('00234')"><td>#00234</td><td>Eligibility check failing for new payer</td><td>Denver</td><td><span class="chip chip-warn">In Progress</span></td><td>2h ago</td><td>→</td></tr>
-            <tr class="row-click" onclick="openCase('00229')"><td>#00229</td><td>Clinic 2 login shows wrong account</td><td>Boulder</td><td><span class="chip chip-blue">Waiting on You</span></td><td>1d ago</td><td>→</td></tr>
-            <tr class="row-click" onclick="openCase('00221')"><td>#00221</td><td>Provisioning delay for new provider seat</td><td>Denver</td><td><span class="chip chip-blue">Received</span></td><td>2d ago</td><td>→</td></tr>
-            <tr class="row-click" onclick="openCase('00218')"><td>#00218</td><td>Report export missing modifiers</td><td>Denver</td><td><span class="chip chip-good">Resolved</span></td><td>5d ago</td><td>→</td></tr>
+            <thead><tr><th>Case</th><th>Subject</th><th>Org / Clinic</th><th>Priority</th><th>Status</th><th>Updated</th><th></th></tr></thead>
+            <tbody id="cases-table-body"></tbody>
           </table>
         </div>
       </div>
@@ -559,54 +672,46 @@
           <div>
             <a href="#" onclick="activateNav('cases-list');return false;" class="muted" style="font-size:12.5px;text-decoration:none;">← Back to cases</a>
             <h2 id="cd-title" style="margin:6px 0 4px;">Eligibility check failing for new payer</h2>
-            <p class="muted" style="margin:0;">Case <span id="cd-num">#00234</span> · Denver Clinic · Created by Gen 3 EMR assistant escalation</p>
+            <p class="muted" style="margin:0;" id="cd-meta">Case <span id="cd-num">#00234</span> · Denver Clinic · Created by Gen 3 EMR assistant escalation</p>
           </div>
-          <span class="chip chip-warn" id="cd-status">In Progress</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="chip" id="cd-priority-chip">High</span>
+            <span class="chip chip-warn" id="cd-status">In Progress</span>
+          </div>
+        </div>
+
+        <div class="banner banner-good hidden" id="cd-closed-banner" style="margin-bottom:14px;">
+          <div>✅</div><div>This case is closed. Reopen it by posting a new comment, or start a new conversation with your EMR assistant.</div>
         </div>
 
         <div class="card pad" style="margin-bottom:18px;">
-          <div class="journey" id="cd-journey">
-            <div class="step done"><div class="line"></div><div class="bubble">✓</div><div class="lbl">Received</div></div>
-            <div class="step done"><div class="line"></div><div class="bubble">✓</div><div class="lbl">In Review</div></div>
-            <div class="step current"><div class="line"></div><div class="bubble">3</div><div class="lbl">In Progress</div></div>
-            <div class="step"><div class="line"></div><div class="bubble">4</div><div class="lbl">Waiting on You</div></div>
-            <div class="step"><div class="line"></div><div class="bubble">5</div><div class="lbl">Resolved</div></div>
-          </div>
+          <div class="journey" id="cd-journey"></div>
         </div>
 
         <div class="two-col">
           <div class="card pad">
             <h3 style="margin-top:0;">Conversation</h3>
-            <div class="comment staff">
-              <div class="cavatar">T2</div>
-              <div class="body"><div class="who">Priya, Tier‑2 Support <span class="role">Agent</span></div><div class="txt">We've traced this to a stale payer ID mapping introduced with the new payer. We're updating the eligibility routing rule now — should be resolved within a business day.</div><div class="when">Today, 9:41 AM</div></div>
-            </div>
-            <div class="comment">
-              <div class="cavatar">JR</div>
-              <div class="body"><div class="who">Jordan Reyes</div><div class="txt">Thanks — this is blocking front-desk check-in for 3 patients this morning, any faster path?</div><div class="when">Today, 8:55 AM</div></div>
-            </div>
-            <div class="comment">
-              <div class="cavatar">🤖</div>
-              <div class="body"><div class="who">Gen 3 EMR Assistant <span class="role">Escalated to Tier‑2</span></div><div class="txt">I wasn't able to resolve the eligibility check error automatically, so I've created a case and looped in a support specialist.</div><div class="when">Yesterday, 4:12 PM</div></div>
-            </div>
-            <div class="field" style="margin-top:16px;">
+            <div id="cd-conversation"></div>
+            <div class="field" style="margin-top:16px;" id="cd-comment-wrap">
               <label>Add a comment</label>
-              <textarea rows="3" placeholder="Type an update for the support team..."></textarea>
+              <textarea rows="3" id="cd-comment-input" placeholder="Type an update for the support team..."></textarea>
             </div>
-            <button class="btn btn-primary" onclick="showToast('Comment added to case #00234')">Post comment</button>
+            <button class="btn btn-primary" id="cd-comment-btn" onclick="postComment()">Post comment</button>
           </div>
           <div>
             <div class="card pad" style="margin-bottom:14px;">
               <h3 style="margin-top:0;font-size:15px;">Case details</h3>
-              <div class="kv"><div class="k">Priority</div><div class="v">High</div></div>
+              <div class="kv"><div class="k">Priority</div><div class="v" id="cd-priority-val">High</div></div>
               <div class="kv"><div class="k">Origin</div><div class="v">Gen 3 EMR handoff</div></div>
               <div class="kv"><div class="k">Owner</div><div class="v">Tier‑2 Support</div></div>
-              <div class="kv"><div class="k">Account</div><div class="v">Sunrise Rehab Partners</div></div>
+              <div class="kv"><div class="k">Account</div><div class="v" id="cd-account">Sunrise Rehab Partners</div></div>
+              <button class="btn btn-ghost btn-block" id="cd-escalate-btn" style="margin-top:12px;" onclick="escalateToHighPriority()">⬆ Escalate to High Priority</button>
+              <button class="btn btn-ghost btn-block" id="cd-close-btn" style="margin-top:8px;" onclick="closeCase()">✔ Close case</button>
             </div>
             <div class="card pad">
               <h3 style="margin-top:0;font-size:15px;">Need this faster?</h3>
               <p class="muted" style="font-size:12.5px;margin-top:0;">Get live help without leaving this case.</p>
-              <button class="btn btn-grad btn-block" style="margin-bottom:8px;" onclick="openAF('Hi! I can see you\'re looking at case #00234 about an eligibility check error. Want me to summarize the latest update, or connect you with a live agent?')">✨ Ask AI</button>
+              <button class="btn btn-grad btn-block" style="margin-bottom:8px;" onclick="openCaseAI()">✨ Ask AI</button>
               <button class="btn btn-ghost btn-block" onclick="escalateLiveAgent()">💬 Chat with a live agent</button>
             </div>
           </div>
@@ -618,14 +723,11 @@
         <div class="page-head">
           <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑1, P2‑4</div><h2>Invoices</h2><p class="muted" style="margin:0;">Balances, due dates and history — presented from Revenue Cloud Billing, the system of record.</p></div>
         </div>
-        <div class="banner banner-info"><div>ℹ️</div><div>Autopay is <b>active</b> using your Visa ····4242. Nothing due manually unless you override below.</div></div>
+        <div class="banner banner-info"><div>ℹ️</div><div>Autopay is <b>active</b> using your Visa ····6620. Nothing due manually unless you override below.</div></div>
         <div class="card list-card">
           <table>
-            <tr><th>Invoice</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr>
-            <tr class="row-click" onclick="openInvoice('INV‑10456', '$1,420.00')"><td>INV‑10456</td><td>Jul 1, 2026</td><td>$1,420.00</td><td><span class="chip chip-bad">Due Jul 15</span></td><td>→</td></tr>
-            <tr class="row-click" onclick="openInvoice('INV‑10388', '$2,860.00')"><td>INV‑10388</td><td>Jun 1, 2026</td><td>$2,860.00</td><td><span class="chip chip-bad">Due now</span></td><td>→</td></tr>
-            <tr class="row-click" onclick="openInvoice('INV‑10312', '$2,860.00')"><td>INV‑10312</td><td>May 1, 2026</td><td>$2,860.00</td><td><span class="chip chip-good">Paid</span></td><td>→</td></tr>
-            <tr class="row-click" onclick="openInvoice('INV‑10245', '$2,860.00')"><td>INV‑10245</td><td>Apr 1, 2026</td><td>$2,860.00</td><td><span class="chip chip-good">Paid</span></td><td>→</td></tr>
+            <thead><tr><th>Invoice</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+            <tbody id="invoices-table-body"></tbody>
           </table>
         </div>
       </div>
@@ -644,20 +746,9 @@
             <h3 style="margin-top:0;">Line items</h3>
             <div class="kv"><div class="k">Gen 3 Enhanced — monthly subscription (7 providers)</div><div class="v">$1,190.00</div></div>
             <div class="kv"><div class="k">RCM add-on</div><div class="v">$230.00</div></div>
-            <div class="kv" style="border-top:1.5px solid var(--border);margin-top:8px;padding-top:12px;"><div class="k"><b>Total due</b></div><div class="v" id="inv-amt" style="font-size:16px;">$1,420.00</div></div>
+            <div class="kv" style="border-top:1.5px solid var(--border);margin-top:8px;padding-top:12px;"><div class="k"><b>Total</b></div><div class="v" id="inv-amt" style="font-size:16px;">$1,420.00</div></div>
           </div>
-          <div class="card pad">
-            <h3 style="margin-top:0;font-size:15px;">Pay this invoice</h3>
-            <div class="field">
-              <label>Payment method</label>
-              <div class="opt-group">
-                <button type="button" class="opt-btn selected" onclick="selectOpt(this)">Visa ····4242 (default)</button>
-                <button type="button" class="opt-btn" onclick="selectOpt(this)">Business checking ····9021 (ACH)</button>
-              </div>
-            </div>
-            <button class="btn btn-grad btn-block" onclick="payInvoice()">Pay <span id="inv-pay-amt">$1,420.00</span> now</button>
-            <p class="muted" style="font-size:11.5px;margin-top:10px;">Card data is tokenized and stored with the payment gateway — no card numbers are stored in Salesforce (P2‑6).</p>
-          </div>
+          <div id="inv-right-panel"></div>
         </div>
       </div>
 
@@ -670,7 +761,7 @@
           <div class="card pad">
             <div class="method-card">
               <div class="icon">VISA</div>
-              <div class="info"><div class="num">···· ···· ···· 4242</div><div class="exp">Expires 03/28 · Default</div></div>
+              <div class="info"><div class="num">···· ···· ···· 6620</div><div class="exp">Expires 03/28 · Default</div></div>
               <span class="chip chip-good">Default</span>
             </div>
             <div class="method-card">
@@ -693,7 +784,12 @@
                 <button type="button" class="opt-btn" onclick="selectPMType(this,true)">Bank account (ACH)</button>
               </div>
             </div>
-            <div class="field"><label id="pm-num-label">Card number</label><input type="text" id="pm-num-input" placeholder="4242 4242 4242 4242"></div>
+            <div class="field"><label id="pm-num-label">Card number</label>
+              <div style="position:relative;">
+                <input type="text" id="pm-num-input" style="padding-right:88px;" placeholder="5391 8823 0147 6620" oninput="detectCardBrand(this,'pm-card-brand')">
+                <span id="pm-card-brand" class="card-brand-badge"></span>
+              </div>
+            </div>
             <div class="grid-2" id="pm-extra-row">
               <div class="field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div>
               <div class="field"><label>CVC</label><input type="text" placeholder="123"></div>
@@ -716,7 +812,7 @@
           </div>
           <div class="field"><label>Autopay method</label>
             <div class="opt-group">
-              <button type="button" class="opt-btn selected" onclick="selectOpt(this)">Visa ····4242</button>
+              <button type="button" class="opt-btn selected" onclick="selectOpt(this)">Visa ····6620</button>
               <button type="button" class="opt-btn" onclick="selectOpt(this)">Business checking ····9021</button>
             </div>
           </div>
@@ -725,19 +821,12 @@
         </div>
       </div>
 
-      <!-- ---------------- PAYMENT PLAN ---------------- -->
+      <!-- ---------------- SUBSCRIPTIONS (with attached payment plans) ---------------- -->
       <div class="view" id="view-billing-plan">
         <div class="page-head">
-          <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑5</div><h2>Payment plan</h2><p class="muted" style="margin:0;">Your approved plan and status — visible the same way to WebPT's internal team.</p></div>
+          <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑5, P2‑22</div><h2>Subscriptions</h2><p class="muted" style="margin:0;">Your active subscriptions by organization — including any payment plan attached to that subscription.</p></div>
         </div>
-        <div class="card pad" style="max-width:640px;">
-          <div class="kv"><div class="k">Plan status</div><div class="v"><span class="chip chip-good">Active — on track</span></div></div>
-          <div class="kv"><div class="k">Original balance</div><div class="v">$6,000.00</div></div>
-          <div class="kv"><div class="k">Remaining balance</div><div class="v">$2,000.00</div></div>
-          <div class="kv"><div class="k">Installment</div><div class="v">$1,000 / month</div></div>
-          <div class="kv"><div class="k">Next payment</div><div class="v">Aug 1, 2026 · Visa ····4242</div></div>
-          <div class="kv"><div class="k">Payments remaining</div><div class="v">2 of 6</div></div>
-        </div>
+        <div id="plans-list"></div>
       </div>
 
       <!-- ---------------- 12 MONTH SCHEDULE ---------------- -->
@@ -745,7 +834,16 @@
         <div class="page-head">
           <div><div class="eyebrow phase-tag phase-2">Phase 2 · P2‑8</div><h2>Upcoming 12‑month schedule</h2><p class="muted" style="margin:0;">Projected invoice dates and amounts based on your currently contracted plan.</p></div>
         </div>
-        <div class="card pad" id="schedule-list"></div>
+        <div class="stat-row" id="schedule-summary" style="margin-bottom:18px;"></div>
+        <div class="card pad">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:6px;">
+            <h3 style="margin:0;font-size:15px;">Next 12 months</h3>
+            <span class="chip chip-blue">Gen 3 Enhanced + RCM</span>
+          </div>
+          <div class="sched-chart" id="schedule-chart"></div>
+          <div class="sched-labels" id="schedule-month-labels"></div>
+          <div class="sched-legend"><span class="dot"></span> Projected invoice amount · current month highlighted</div>
+        </div>
       </div>
 
       <!-- ---------------- IMPLEMENTATION TRACKING ---------------- -->
@@ -770,14 +868,14 @@
         </div>
         <div class="card pad" style="text-align:center;padding:40px;">
           <p class="muted">As an existing customer, adding seats or products routes you into the same self‑serve buy flow used by new customers (P2‑8–P2‑14), pre-filled with your account context.</p>
-          <button class="btn btn-grad" onclick="goPublic(); startBuy('existing');">Continue to plan selection →</button>
+          <button class="btn btn-grad" onclick="buyMoreFromAccount()">Continue to plan selection →</button>
         </div>
       </div>
 
       <!-- ---------------- KNOWLEDGE / DOCUMENTATION ---------------- -->
       <div class="view" id="view-knowledge">
         <div class="page-head">
-          <div><div class="eyebrow">Reference</div><h2>Knowledge &amp; documentation</h2><p class="muted" style="margin:0;">Help content lives in your Gen 3 EMR — not in Experience Cloud (R6, R14).</p></div>
+          <div><div class="eyebrow">Reference</div><h2>Help &amp; documentation</h2><p class="muted" style="margin:0;">Help content lives in your Gen 3 EMR — not in Experience Cloud (R6, R14).</p></div>
         </div>
         <div class="banner banner-info">
           <div>ℹ️</div>
@@ -986,6 +1084,7 @@
   <!-- Qualify: email + TIN -->
   <div class="view" id="pub-view-qualify">
     <div class="wizard-shell">
+      <a href="#" onclick="showPublicView('pub-view-landing');return false;" class="muted" style="font-size:12.5px;text-decoration:none;display:inline-block;margin-bottom:10px;">← Back</a>
       <div class="wizard-progress"><div class="seg on"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
       <div class="eyebrow phase-tag phase-2">P2‑9 · Buyer validation</div>
       <h2>Let's verify your business</h2>
@@ -1010,13 +1109,31 @@
   <!-- Plans -->
   <div class="view" id="pub-view-plans">
     <div class="wizard-shell" style="max-width:920px;">
+      <a href="#" onclick="showPublicView('pub-view-qualify');return false;" class="muted" style="font-size:12.5px;text-decoration:none;display:inline-block;margin-bottom:10px;">← Back</a>
       <div class="wizard-progress"><div class="seg on"></div><div class="seg on"></div><div class="seg"></div><div class="seg"></div></div>
       <div class="eyebrow phase-tag phase-2">P2‑10 · Rendered live from CPQ / Revenue Cloud</div>
       <h2>Choose your plan</h2>
+      <p class="muted" style="margin-top:-6px;">Pricing and plan contents are pulled live from Revenue Cloud — nothing here is hardcoded in Experience Cloud.</p>
       <div class="grid-2" style="grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:18px;">
-        <div class="plan-card" onclick="selectPlan(this,'Standard','$690')"><h3>Standard</h3><div class="price">$690<span>/mo</span></div><ul><li>✓ Core EMR + RCM</li><li>✓ Up to 5 providers</li><li>✓ Case &amp; billing portal</li></ul></div>
-        <div class="plan-card selected" onclick="selectPlan(this,'Enhanced','$1,190')"><div class="rec">Most popular</div><h3>Enhanced</h3><div class="price">$1,190<span>/mo</span></div><ul><li>✓ Everything in Standard</li><li>✓ Advanced analytics</li><li>✓ Priority Tier‑2 support</li></ul></div>
-        <div class="plan-card" onclick="selectPlan(this,'Enhanced + RCM','$1,420')"><h3>Enhanced + RCM</h3><div class="price">$1,420<span>/mo</span></div><ul><li>✓ Everything in Enhanced</li><li>✓ Full RCM add-on</li><li>✓ Dedicated CSM</li></ul></div>
+        <div class="plan-card" onclick="selectPlan(this,'Standard','$690')">
+          <h3>Standard</h3><div class="price">$690<span>/mo</span></div>
+          <div class="plan-bestfor">Best for solo or small practices just getting started</div>
+          <ul><li>✓ Core EMR + RCM</li><li>✓ Up to 5 providers</li><li>✓ Case &amp; billing portal</li></ul>
+        </div>
+        <div class="plan-card selected" onclick="selectPlan(this,'Enhanced','$1,190')">
+          <div class="rec">Most popular</div><h3>Enhanced</h3><div class="price">$1,190<span>/mo</span></div>
+          <div class="plan-bestfor">Best for growing clinics that want analytics and faster support</div>
+          <ul><li>✓ Everything in Standard</li><li>✓ Advanced analytics</li><li>✓ Priority Tier‑2 support</li></ul>
+        </div>
+        <div class="plan-card" onclick="selectPlan(this,'Enhanced + RCM','$1,420')">
+          <h3>Enhanced + RCM</h3><div class="price">$1,420<span>/mo</span></div>
+          <div class="plan-bestfor">Best for practices that want billing fully handled for them</div>
+          <ul><li>✓ Everything in Enhanced</li><li>✓ Full RCM add-on</li><li>✓ Dedicated CSM</li></ul>
+        </div>
+      </div>
+      <div class="plan-help-note">
+        <div><b>Not sure which plan fits?</b><div class="muted" style="font-size:12.5px;">Tell AI about your clinic size and needs — it can recommend a plan using live Revenue Cloud pricing.</div></div>
+        <button class="btn btn-ghost btn-sm" onclick="openAF('Happy to help you pick a plan! How many providers do you have, and do you want billing handled in-house or fully managed for you?', ['I have 3 providers, in-house billing','I have 8 providers across 2 clinics','What does RCM actually include?'])">✨ Ask AI</button>
       </div>
       <button class="btn btn-grad btn-block" style="margin-top:22px;" onclick="continueFromPlans()">Continue →</button>
     </div>
@@ -1025,24 +1142,42 @@
   <!-- Checkout -->
   <div class="view" id="pub-view-checkout">
     <div class="wizard-shell">
+      <a href="#" onclick="showPublicView('pub-view-plans');return false;" class="muted" style="font-size:12.5px;text-decoration:none;display:inline-block;margin-bottom:10px;">← Back</a>
       <div class="wizard-progress"><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg"></div></div>
       <div class="eyebrow phase-tag phase-2">P2‑13 · Gateway tokenizes &amp; charges</div>
       <h2>Payment</h2>
       <div class="card pad">
+        <div class="field">
+          <label>Billing cycle</label>
+          <div class="opt-group" id="co-cycle-group">
+            <button type="button" class="opt-btn selected" onclick="selectBillingCycle(this,'monthly')">Monthly</button>
+            <button type="button" class="opt-btn" onclick="selectBillingCycle(this,'yearly')">Yearly <span style="color:var(--good);font-weight:800;">— Save 15%</span></button>
+          </div>
+        </div>
         <div class="kv"><div class="k">Plan selected</div><div class="v" id="co-plan">Enhanced — $1,190/mo</div></div>
-        <div class="kv" style="margin-bottom:16px;"><div class="k">Billed</div><div class="v">Monthly</div></div>
+        <div class="kv"><div class="k">Billed</div><div class="v" id="co-cycle-label">Monthly</div></div>
+        <div class="kv" style="border-top:1.5px solid var(--border);margin-top:8px;padding-top:12px;">
+          <div class="k"><b>Total due today</b></div><div class="v" id="co-total" style="font-size:17px;">$1,190.00</div>
+        </div>
+        <div class="muted" id="co-savings" style="font-size:11.5px;margin:2px 0 14px;"></div>
 
         <div class="field hidden" id="co-saved-wrap">
           <label>Payment method</label>
           <div class="opt-group" id="co-method-group">
-            <button type="button" class="opt-btn selected" onclick="selectCheckoutMethod(this,false)">Visa ····4242 on file</button>
+            <button type="button" class="opt-btn selected" onclick="selectCheckoutMethod(this,false)">Visa ····6620 on file</button>
             <button type="button" class="opt-btn" onclick="selectCheckoutMethod(this,false)">Business checking ····9021 on file</button>
             <button type="button" class="opt-btn" onclick="selectCheckoutMethod(this,true)">+ Use a new card</button>
           </div>
         </div>
 
         <div id="co-new-card-fields">
-          <div class="field"><label>Card number</label><input type="text" placeholder="4242 4242 4242 4242"></div>
+          <div class="field">
+            <label>Card number</label>
+            <div style="position:relative;">
+              <input type="text" id="co-card-number" style="padding-right:88px;" value="1001 8823 0147 6620" oninput="detectCardBrand(this,'co-card-brand')">
+              <span id="co-card-brand" class="card-brand-badge">VISA</span>
+            </div>
+          </div>
           <div class="grid-2"><div class="field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div><div class="field"><label>CVC</label><input type="text" placeholder="123"></div></div>
           <label style="display:flex;align-items:center;gap:8px;font-weight:500;color:var(--navy-soft);margin-top:2px;">
             <input type="checkbox" id="co-save-card" checked style="width:auto;">
@@ -1061,20 +1196,37 @@
     <div class="wizard-shell">
       <div class="eyebrow phase-tag phase-2">P2‑14 · EMR provisioning API</div>
       <h2>You're all set 🎉</h2>
-      <p class="muted">We've emitted your purchase to the Gen 3 EMR provisioning payload. Here's what happens next:</p>
+      <p class="muted">Transaction <b id="confirm-txn">TXN-XXXXXXXX</b> — <span id="confirm-amount-line">payment charged to your card</span>.</p>
       <div class="card pad">
-        <div class="track-item"><div class="mk" style="background:var(--good);">✓</div><div><b>Payment confirmed</b><div class="muted" style="font-size:12.5px;">$1,190.00 charged to card ending 4242</div></div></div>
-        <div class="track-item"><div class="mk" style="background:var(--good);">✓</div><div><b>Account, Opportunity, Quote &amp; Order created</b><div class="muted" style="font-size:12.5px;">via existing CPQ / Revenue Cloud APIs</div></div></div>
-        <div class="track-item"><div class="mk" style="background:var(--blue);">●</div><div><b>Provisioning your EMR environment</b><div class="muted" style="font-size:12.5px;">Usually takes under 10 minutes</div></div></div>
-        <div class="track-item"><div class="mk" style="background:#cdd4de;">○</div><div><b>Access &amp; credentialing email</b><div class="muted" style="font-size:12.5px;">Sent to jordan@sunriserehab.com — first login provisions Support Hub via SSO</div></div></div>
+        <div class="track-item" id="confirm-step-1"><div class="mk" style="background:var(--good);">✓</div><div><b>Payment confirmed</b><div class="muted" style="font-size:12.5px;" id="confirm-step-1-sub">Charged to your card</div></div></div>
+        <div class="track-item" id="confirm-step-2"><div class="mk" style="background:#cdd4de;">○</div><div><b>Account, Opportunity, Quote &amp; Order created</b><div class="muted" style="font-size:12.5px;">via existing CPQ / Revenue Cloud APIs</div></div></div>
+        <div class="track-item" id="confirm-step-3"><div class="mk" style="background:#cdd4de;">○</div><div><b>Provisioning your EMR environment</b><div class="muted" style="font-size:12.5px;" id="confirm-step-3-sub">Usually takes under 10 minutes</div></div></div>
+        <div class="track-item" id="confirm-step-4"><div class="mk" style="background:#cdd4de;">○</div><div><b>Access &amp; credentialing email</b><div class="muted" style="font-size:12.5px;">Will be sent to jordan@sunriserehab.com — first login provisions Support Hub via SSO</div></div></div>
       </div>
-      <button class="btn btn-grad btn-block" style="margin-top:16px;" onclick="finishAndGoHome()">Go to your Support Hub →</button>
+
+      <div class="card pad hidden" id="confirm-nextsteps" style="margin-top:16px;">
+        <h3 style="margin-top:0;font-size:15px;">What happens next</h3>
+        <div class="kv"><div class="k">1. Check your email</div><div class="v">Within a few minutes</div></div>
+        <div class="kv"><div class="k">2. Click the activation link</div><div class="v">Sets your password via SSO</div></div>
+        <div class="kv"><div class="k">3. First login provisions access</div><div class="v">Automatic, no ticket needed</div></div>
+        <div class="kv"><div class="k">Need help meanwhile?</div><div class="v">Use the buttons below</div></div>
+      </div>
+
+      <div class="hidden" id="confirm-actions">
+        <button class="btn btn-grad btn-block" style="margin-top:16px;" onclick="finishAndGoHome()">Go to your Support Hub →</button>
+        <p class="muted" style="font-size:11.5px;text-align:center;margin:8px 0 12px;">Simulates clicking the link in your access &amp; credentialing email — in production this arrives once provisioning finishes, not instantly.</p>
+        <div class="grid-2" style="grid-template-columns:1fr 1fr;gap:10px;">
+          <button class="btn btn-ghost" onclick="startSalesChat()">💬 Talk to an expert</button>
+          <button class="btn btn-ghost" onclick="openAF('Congrats on your Gen 3 purchase! I can help with next steps, billing questions, or getting your team set up — what do you need?')">✨ Ask AI</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Assisted path -->
   <div class="view" id="pub-view-assisted">
     <div class="wizard-shell">
+      <a href="#" onclick="showPublicView('pub-view-qualify');return false;" class="muted" style="font-size:12.5px;text-decoration:none;display:inline-block;margin-bottom:10px;">← Back</a>
       <div class="eyebrow phase-tag phase-2">P2‑11, P2‑20, P2‑21 · Sales-assisted path</div>
       <h2>Let's get you the right setup</h2>
       <p class="muted">Based on your provider count / RCM needs, this account is best served with a specialist — your context carries over, no restart needed.</p>
@@ -1082,8 +1234,8 @@
         <div class="kv"><div class="k">Email</div><div class="v" id="as-email">jordan@sunriserehab.com</div></div>
         <div class="kv"><div class="k">Providers</div><div class="v" id="as-providers">5‑9</div></div>
         <div class="kv" style="margin-bottom:16px;"><div class="k">Plan interest</div><div class="v" id="as-plan">Enhanced + RCM</div></div>
-        <button class="btn btn-grad btn-block" style="margin-bottom:8px;" onclick="showToast('Rep notified — live chat connecting')">💬 Chat with a rep now</button>
-        <button class="btn btn-ghost btn-block" onclick="showToast('Demo scheduling opened')">📅 Schedule a demo</button>
+        <button class="btn btn-grad btn-block" style="margin-bottom:8px;" onclick="startSalesChat()">💬 Chat with a rep now</button>
+        <button class="btn btn-ghost btn-block" onclick="openDemoModal()">📅 Schedule a demo</button>
       </div>
     </div>
   </div>
@@ -1091,12 +1243,13 @@
   <!-- Sandbox -->
   <div class="view" id="pub-view-sandbox">
     <div class="wizard-shell">
+      <a href="#" onclick="showPublicView('pub-view-landing');return false;" class="muted" style="font-size:12.5px;text-decoration:none;display:inline-block;margin-bottom:10px;">← Back</a>
       <div class="eyebrow phase-tag phase-2">P2‑15, P2‑16 · Sandbox = dummy data</div>
       <h2>Try the sandbox</h2>
       <p class="muted">A lighter signup — no full provisioning, no live patient data.</p>
       <div class="card pad">
-        <div class="field"><label>Name</label><input type="text" placeholder="Jordan Reyes"></div>
-        <div class="field"><label>Work email</label><input type="email" placeholder="you@yourclinic.com"></div>
+        <div class="field"><label>Name</label><input type="text" id="sb-name" value="Jordan Reyes"></div>
+        <div class="field"><label>Work email</label><input type="email" id="sb-email" value="jordan@sunriserehab.com"></div>
         <button class="btn btn-grad btn-block" onclick="finishSandbox()">Launch sandbox →</button>
       </div>
     </div>
@@ -1106,8 +1259,15 @@
     <div class="wizard-shell">
       <h2>Your sandbox is ready 🧪</h2>
       <p class="muted">Explore Gen 3 with sample clinic data. Attribution and lifecycle are tracked via HubSpot ↔ Salesforce sync (P2‑18) so we can follow up at the right time.</p>
-      <div class="card pad" style="text-align:center;padding:34px;">
-        <button class="btn btn-grad" onclick="startBuy('sandbox-convert')">Ready to buy for real? Convert now →</button>
+      <div class="card pad">
+        <div class="banner banner-info" style="margin:0 0 16px;">
+          <div>📧</div>
+          <div>We've emailed your sandbox link and login details to <b id="sb-email-confirm">jordan@sunriserehab.com</b>. It should arrive within a few minutes.</div>
+        </div>
+        <div class="kv"><div class="k">Sandbox environment</div><div class="v">Sample clinic data — no live patients</div></div>
+        <div class="kv"><div class="k">Access window</div><div class="v">14 days, extendable anytime</div></div>
+        <div class="kv" style="margin-bottom:14px;"><div class="k">Sign-in method</div><div class="v">Link in your email → sandbox SSO</div></div>
+        <button class="btn btn-grad btn-block" onclick="startBuy('sandbox-convert')">Ready to buy for real? Convert now →</button>
       </div>
     </div>
   </div>
@@ -1127,7 +1287,7 @@
       </div>
       <div>
         <h4>Resources</h4>
-        <a onclick="activateNav('knowledge')">Knowledge &amp; Documentation</a>
+        <a onclick="activateNav('knowledge')">Help &amp; Documentation</a>
         <a onclick="return false;">Practice Guides</a>
         <a onclick="return false;">Success Stories</a>
         <a onclick="showToast('Support contact opened');">Contact Support</a>
@@ -1176,8 +1336,8 @@
 <button class="af-bubble" onclick="toggleAF()" id="af-toggle">✨</button>
 <div class="af-panel" id="af-panel">
   <div class="af-head">
-    <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;">✨</div>
-    <div><div class="t">Ask AI</div><div class="s" id="af-subtitle">Member assistant · Support Hub</div></div>
+    <div id="af-icon" style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;">✨</div>
+    <div><div class="t" id="af-title">Ask AI</div><div class="s" id="af-subtitle">Member assistant · Support Hub</div></div>
     <button onclick="toggleAF()">✕</button>
   </div>
   <div class="af-body" id="af-body"></div>
@@ -1189,6 +1349,26 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="loader-overlay hidden" id="loader-overlay">
+  <div class="loader-card">
+    <div class="spinner"></div>
+    <div class="loader-text" id="loader-text">Loading…</div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="demo-modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><b>Schedule a demo</b><div class="muted" style="font-size:11.5px;">Book time directly on your rep's calendar</div></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <a href="https://scheduler.zoom.us/sandeep-supehia/demo" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Open in new tab ↗</a>
+        <button class="modal-close" onclick="closeModal('demo-modal')">✕</button>
+      </div>
+    </div>
+    <iframe id="demo-iframe" src="about:blank" title="Schedule a demo"></iframe>
+  </div>
+</div>
 
 <script>
 /* ---------------- view / nav plumbing ---------------- */
@@ -1210,6 +1390,7 @@ function activateNav(viewId){
   });
   closeAllDrops();
   window.scrollTo(0,0);
+  if(document.getElementById('af-panel').classList.contains('open')) refreshAFForPage(viewId);
 }
 function toggleDrop(e, el){
   e.stopPropagation();
@@ -1249,6 +1430,8 @@ function closeAllOverlays(){
   closeAllDrops();
   closeUserMenu();
   closeNotifPanel();
+  const orgPanel = document.getElementById('org-filter-panel');
+  if(orgPanel) orgPanel.classList.remove('open');
 }
 document.addEventListener('click', closeAllOverlays);
 
@@ -1259,22 +1442,37 @@ function showPublicView(id){
 }
 
 function setHeaderMode(mode){
-  document.getElementById('gh-actions-anon').classList.toggle('hidden', mode!=='anon');
+  document.getElementById('gh-actions-anon').classList.toggle('hidden', mode!=='login');
   document.getElementById('gh-actions-public').classList.toggle('hidden', mode!=='public');
   document.getElementById('gh-actions-member').classList.toggle('hidden', mode!=='member');
   document.getElementById('app-nav').classList.toggle('active', mode==='member');
 }
+function showLoginScreen(){
+  document.getElementById('public-app').classList.remove('active');
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('idp-screen').classList.add('hidden');
+  document.getElementById('login-screen').style.display='flex';
+  setHeaderMode('login');
+}
+function goToIdp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('idp-screen').classList.remove('hidden');
+}
+function idpSignIn(){
+  showLoaderSequence(['Verifying credentials…','Signing you in via WebPT SSO…'], doLogin, 800);
+}
 function doLogin(){
   document.getElementById('login-screen').style.display='none';
+  document.getElementById('idp-screen').classList.add('hidden');
   document.getElementById('app').classList.add('active');
   setHeaderMode('member');
   activateNav('dashboard');
-  afSetContext('member');
+  document.getElementById('af-body').innerHTML = '';
+  document.getElementById('af-quick').innerHTML = '';
 }
 function doLogout(){
   document.getElementById('app').classList.remove('active');
-  document.getElementById('login-screen').style.display='flex';
-  setHeaderMode('anon');
+  goPublic();
 }
 function goPublic(){
   document.getElementById('login-screen').style.display='none';
@@ -1284,11 +1482,25 @@ function goPublic(){
   setHeaderMode('public');
   afSetContext('public');
   initQuoteCarousel();
+  document.getElementById('pub-back-btn').classList.toggle('hidden', !CAME_FROM_MEMBER);
+  document.getElementById('pub-login-btn').classList.toggle('hidden', CAME_FROM_MEMBER);
+}
+let CAME_FROM_MEMBER = false;
+function buyMoreFromAccount(){
+  CAME_FROM_MEMBER = true;
+  goPublic();
+  startBuy('existing');
 }
 function backToLogin(){
   document.getElementById('public-app').classList.remove('active');
-  document.getElementById('login-screen').style.display='flex';
-  setHeaderMode('anon');
+  if(CAME_FROM_MEMBER){
+    CAME_FROM_MEMBER = false;
+    document.getElementById('app').classList.add('active');
+    setHeaderMode('member');
+    activateNav('dashboard');
+    return;
+  }
+  goPublic();
 }
 function openProfile(){
   document.querySelectorAll('#app .view').forEach(v=>v.classList.remove('active'));
@@ -1305,9 +1517,10 @@ function selectOpt(el){
 function selectPMType(el, isACH){
   selectOpt(el);
   document.getElementById('pm-num-label').textContent = isACH ? 'Account number' : 'Card number';
-  document.getElementById('pm-num-input').placeholder = isACH ? '000123456789' : '4242 4242 4242 4242';
+  document.getElementById('pm-num-input').placeholder = isACH ? '000123456789' : '5391 8823 0147 6620';
   document.getElementById('pm-extra-row').classList.toggle('hidden', isACH);
   document.getElementById('pm-routing-row').classList.toggle('hidden', !isACH);
+  document.getElementById('pm-card-brand').style.display = isACH ? 'none' : '';
 }
 function kbSearch(){
   const q = document.getElementById('kb-search').value.trim();
@@ -1355,6 +1568,58 @@ function quoteNav(dir){
 }
 
 /* ---------------- toast ---------------- */
+/* ---------------- demo scheduling modal (embedded iframe) ---------------- */
+let demoLoadTimer = null;
+function openDemoModal(){
+  const modal = document.getElementById('demo-modal');
+  const iframe = document.getElementById('demo-iframe');
+  const card = modal.querySelector('.modal-card');
+  card.querySelectorAll('.modal-fallback').forEach(n=>n.remove());
+  iframe.classList.remove('hidden');
+  iframe.src = 'https://scheduler.zoom.us/sandeep-supehia/demo';
+  modal.classList.remove('hidden');
+  clearTimeout(demoLoadTimer);
+  let loaded = false;
+  iframe.onload = ()=>{ loaded = true; };
+  demoLoadTimer = setTimeout(()=>{
+    if(!loaded){
+      iframe.classList.add('hidden');
+      const fb = document.createElement('div');
+      fb.className = 'modal-fallback';
+      fb.innerHTML = '<div style="font-size:32px;">📅</div><div><b>This scheduler can\'t be embedded here</b><div class="muted" style="font-size:12.5px;margin-top:4px;">Some booking pages block embedding for security. Open it directly instead.</div></div><a class="btn btn-grad" href="https://scheduler.zoom.us/sandeep-supehia/demo" target="_blank" rel="noopener">Open scheduler in new tab ↗</a>';
+      card.appendChild(fb);
+    }
+  }, 3500);
+}
+function closeModal(id){
+  document.getElementById(id).classList.add('hidden');
+  clearTimeout(demoLoadTimer);
+  document.getElementById('demo-iframe').src = 'about:blank';
+}
+
+/* ---------------- live sales rep chat ---------------- */
+function startSalesChat(){
+  toggleAF(true);
+  AF_CONTEXT = 'sales-live';
+  document.getElementById('af-icon').textContent = '🧑';
+  document.getElementById('af-title').textContent = 'WebPT Sales';
+  document.getElementById('af-subtitle').textContent = 'Connecting…';
+  document.getElementById('af-body').innerHTML = '';
+  document.getElementById('af-quick').innerHTML = '';
+  afPush('system', 'Connecting you to a specialist…');
+  setTimeout(()=>{
+    document.getElementById('af-subtitle').textContent = 'Live · Sam from WebPT Sales';
+    afPush('bot', 'Hi Jordan, this is Sam from WebPT Sales — I can see you\'re looking at the Enhanced + RCM plan. How can I help?');
+    const q = document.getElementById('af-quick');
+    ['Can we get a volume discount?','What does onboarding look like?','I\'d like to schedule a call'].forEach(t=>{
+      const b=document.createElement('button');
+      b.textContent=t;
+      b.onclick=()=>{afPush('user',t); respondAF(t);};
+      q.appendChild(b);
+    });
+  }, 1600);
+}
+
 function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = '✅ '+msg;
@@ -1362,51 +1627,339 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
+/* ---------------- reusable loading overlay ---------------- */
+function showLoader(text){
+  document.getElementById('loader-text').textContent = text;
+  document.getElementById('loader-overlay').classList.remove('hidden');
+}
+function hideLoader(){
+  document.getElementById('loader-overlay').classList.add('hidden');
+}
+/* cycles through a list of messages, then hides and calls onDone */
+function showLoaderSequence(messages, onDone, interval){
+  interval = interval || 900;
+  let i = 0;
+  document.getElementById('loader-overlay').classList.remove('hidden');
+  (function step(){
+    document.getElementById('loader-text').textContent = messages[i];
+    i++;
+    if(i < messages.length){ setTimeout(step, interval); }
+    else { setTimeout(()=>{ hideLoader(); onDone(); }, interval); }
+  })();
+}
+function genTxnId(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s = '';
+  for(let i=0;i<8;i++) s += chars[Math.floor(Math.random()*chars.length)];
+  return 'TXN-'+s;
+}
+
 /* ---------------- cases ---------------- */
+const JOURNEY_LABELS = ['Received','In Review','In Progress','Waiting on You','Resolved'];
+const STATUS_CHIP = {'Received':'chip-blue','In Review':'chip-blue','In Progress':'chip-warn','Waiting on You':'chip-blue','Resolved':'chip-good','Closed':'chip-closed'};
+const PRIORITY_CHIP = {'High':'chip-bad','Medium':'chip-warn','Low':'chip-blue'};
+
 const CASES = {
-  '00234': {title:'Eligibility check failing for new payer', status:'In Progress', chip:'chip-warn', step:2},
-  '00229': {title:'Clinic 2 login shows wrong account', status:'Waiting on You', chip:'chip-blue', step:3},
-  '00218': {title:'Report export missing modifiers', status:'Resolved', chip:'chip-good', step:4}
+  '00234': {id:'00234', subject:'Eligibility check failing for new payer', org:'Sunrise Rehab Partners', clinic:'Denver', status:'In Progress', priority:'High', updated:'2h ago', mine:true, journeyStep:2,
+    comments:[
+      {who:'Gen 3 EMR Assistant', role:'Escalated to Tier‑2', staff:true, avatar:'🤖', txt:'I wasn\'t able to resolve the eligibility check error automatically, so I\'ve created a case and looped in a support specialist.', when:'Yesterday, 4:12 PM'},
+      {who:'Jordan Reyes', staff:false, avatar:'JR', txt:'Thanks — this is blocking front-desk check-in for 3 patients this morning, any faster path?', when:'Today, 8:55 AM'},
+      {who:'Priya, Tier‑2 Support', role:'Agent', staff:true, avatar:'T2', txt:'We\'ve traced this to a stale payer ID mapping introduced with the new payer. We\'re updating the eligibility routing rule now — should be resolved within a business day.', when:'Today, 9:41 AM'}
+    ]},
+  '00229': {id:'00229', subject:'Clinic 2 login shows wrong account', org:'Sunrise Rehab Partners', clinic:'Boulder', status:'Waiting on You', priority:'Medium', updated:'1d ago', mine:true, journeyStep:3,
+    comments:[
+      {who:'Gen 3 EMR Assistant', role:'Escalated to Tier‑2', staff:true, avatar:'🤖', txt:'This looked like an account-mapping issue I couldn\'t fix automatically, so I\'ve created a case for the team.', when:'2 days ago'},
+      {who:'Marcus, Tier‑2 Support', role:'Agent', staff:true, avatar:'T2', txt:'Can you confirm the exact email address the Boulder front-desk user is logging in with? We see two similar contacts on file.', when:'1 day ago'}
+    ]},
+  '00221': {id:'00221', subject:'Provisioning delay for new provider seat', org:'Sunrise Rehab Partners', clinic:'Denver', status:'Received', priority:'Low', updated:'2d ago', mine:false, journeyStep:0,
+    comments:[
+      {who:'Gen 3 EMR Assistant', role:'Escalated to Tier‑2', staff:true, avatar:'🤖', txt:'Provisioning for the new provider seat hasn\'t completed after 24 hours, so I\'ve flagged this for the team to check.', when:'2 days ago'}
+    ]},
+  '00218': {id:'00218', subject:'Report export missing modifiers', org:'Sunrise Rehab Partners', clinic:'Denver', status:'Resolved', priority:'Medium', updated:'5d ago', mine:false, journeyStep:4,
+    comments:[
+      {who:'Gen 3 EMR Assistant', role:'Escalated to Tier‑2', staff:true, avatar:'🤖', txt:'Export formatting looked off and I couldn\'t fix it automatically, so I\'ve created a case.', when:'6 days ago'},
+      {who:'Priya, Tier‑2 Support', role:'Agent', staff:true, avatar:'T2', txt:'Found it — a report template was missing the modifier column. Fixed and confirmed on our end.', when:'5 days ago'}
+    ]},
+  '00207': {id:'00207', subject:'Claim denial pattern on new payer', org:'Confluent Health – Texas PTS', clinic:'Austin', status:'In Progress', priority:'High', updated:'3d ago', mine:true, journeyStep:2,
+    comments:[
+      {who:'Gen 3 EMR Assistant', role:'Escalated to Tier‑2', staff:true, avatar:'🤖', txt:'Denial rate on this payer spiked past our threshold, so I\'ve escalated for RCM review.', when:'3 days ago'},
+      {who:'Dana, RCM Specialist', role:'Agent', staff:true, avatar:'RC', txt:'Pulling the last 30 days of claims for this payer now — will share findings shortly.', when:'2 days ago'}
+    ]},
+  '00199': {id:'00199', subject:'Need bulk user import for new hires', org:'Confluent Health – Texas PTS', clinic:'Austin', status:'Closed', priority:'Low', updated:'9d ago', mine:false, journeyStep:4,
+    comments:[
+      {who:'Gen 3 EMR Assistant', role:'Escalated to Tier‑2', staff:true, avatar:'🤖', txt:'Bulk import isn\'t something I can do directly, so I\'ve created a case for the team.', when:'10 days ago'},
+      {who:'Marcus, Tier‑2 Support', role:'Agent', staff:true, avatar:'T2', txt:'Import completed — 14 new users added. Closing this out.', when:'9 days ago'}
+    ]}
 };
-function openCase(num){
-  const c = CASES[num] || CASES['00234'];
-  document.getElementById('cd-title').textContent = c.title;
-  document.getElementById('cd-num').textContent = '#'+num;
-  const chip = document.getElementById('cd-status');
-  chip.textContent = c.status;
-  chip.className = 'chip '+c.chip;
+let CASE_TAB = 'org';
+let CURRENT_CASE = '00234';
+
+function toggleOrgFilter(e){
+  e.stopPropagation();
+  const panel = document.getElementById('org-filter-panel');
+  const isOpen = panel.classList.contains('open');
+  closeAllOverlays();
+  if(!isOpen) panel.classList.add('open');
+}
+function applyCaseFilters(){ renderCasesList(); }
+function setCaseTab(tab, el){
+  CASE_TAB = tab;
+  document.querySelectorAll('#view-cases-list .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderCasesList();
+}
+function selectedOrgs(){
+  return Array.from(document.querySelectorAll('#org-filter-panel input:checked')).map(i=>i.value);
+}
+function renderCasesList(){
+  const orgs = selectedOrgs();
+  const all = Object.values(CASES).filter(c => orgs.includes(c.org));
+  const mineCount = all.filter(c=>c.mine).length;
+  document.getElementById('tab-org-count').textContent = all.length;
+  document.getElementById('tab-mine-count').textContent = mineCount;
+  const rows = CASE_TAB === 'mine' ? all.filter(c=>c.mine) : all;
+  const tbody = document.getElementById('cases-table-body');
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:34px;">No cases match the selected filters.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(c => `
+    <tr class="row-click" onclick="openCase('${c.id}')">
+      <td>#${c.id}</td>
+      <td>${c.subject}</td>
+      <td>${c.org} · ${c.clinic}</td>
+      <td><span class="chip ${PRIORITY_CHIP[c.priority]}">${c.priority}</span></td>
+      <td><span class="chip ${STATUS_CHIP[c.status]}">${c.status}</span></td>
+      <td>${c.updated}</td>
+      <td>→</td>
+    </tr>`).join('');
+}
+
+function renderJourney(stepIndex, statusLabel){
+  const el = document.getElementById('cd-journey');
+  if(statusLabel === 'Closed'){
+    el.innerHTML = JOURNEY_LABELS.map(lbl => `<div class="step done"><div class="line"></div><div class="bubble">✓</div><div class="lbl">${lbl}</div></div>`).join('');
+    return;
+  }
+  el.innerHTML = JOURNEY_LABELS.map((lbl,i)=>{
+    const cls = i < stepIndex ? 'done' : i === stepIndex ? 'current' : '';
+    const bubble = i < stepIndex ? '✓' : (i+1);
+    return `<div class="step ${cls}"><div class="line"></div><div class="bubble">${bubble}</div><div class="lbl">${lbl}</div></div>`;
+  }).join('');
+}
+
+function renderConversation(c){
+  const wrap = document.getElementById('cd-conversation');
+  wrap.innerHTML = c.comments.map(cm => `
+    <div class="comment ${cm.staff ? 'staff' : ''}">
+      <div class="cavatar">${cm.avatar}</div>
+      <div class="body"><div class="who">${cm.who}${cm.role ? ' <span class="role">'+cm.role+'</span>' : ''}</div><div class="txt">${cm.txt}</div><div class="when">${cm.when}</div></div>
+    </div>`).join('');
+}
+
+function openCase(id){
+  const c = CASES[id] || CASES['00234'];
+  CURRENT_CASE = id;
+  document.getElementById('cd-title').textContent = c.subject;
+  document.getElementById('cd-num').textContent = '#'+id;
+  document.getElementById('cd-meta').innerHTML = 'Case <span id="cd-num">#'+id+'</span> · '+c.org+' · '+c.clinic+' Clinic · Created by Gen 3 EMR assistant escalation';
+  document.getElementById('cd-account').textContent = c.org;
+
+  const statusChip = document.getElementById('cd-status');
+  statusChip.textContent = c.status;
+  statusChip.className = 'chip '+STATUS_CHIP[c.status];
+
+  const prChip = document.getElementById('cd-priority-chip');
+  prChip.textContent = c.priority;
+  prChip.className = 'chip '+PRIORITY_CHIP[c.priority];
+  document.getElementById('cd-priority-val').textContent = c.priority;
+
+  renderJourney(c.journeyStep, c.status);
+  renderConversation(c);
+
+  const isClosed = c.status === 'Closed';
+  document.getElementById('cd-closed-banner').classList.toggle('hidden', !isClosed);
+  document.getElementById('cd-comment-wrap').classList.toggle('hidden', isClosed);
+  document.getElementById('cd-comment-btn').classList.toggle('hidden', isClosed);
+
+  const escBtn = document.getElementById('cd-escalate-btn');
+  if(c.priority === 'High'){ escBtn.disabled = true; escBtn.textContent = '⬆ Already High priority'; }
+  else { escBtn.disabled = false; escBtn.textContent = '⬆ Escalate to High Priority'; }
+
+  const closeBtn = document.getElementById('cd-close-btn');
+  closeBtn.textContent = isClosed ? '✔ Case closed' : '✔ Close case';
+  closeBtn.disabled = isClosed;
+
   activateNav('case-detail');
 }
+
+function postComment(){
+  const input = document.getElementById('cd-comment-input');
+  const text = input.value.trim();
+  if(!text){ showToast('Type a comment first'); return; }
+  const c = CASES[CURRENT_CASE];
+  c.comments.push({who:'Jordan Reyes', staff:false, avatar:'JR', txt:text, when:'Just now'});
+  renderConversation(c);
+  input.value = '';
+  showToast('Comment added to case #'+CURRENT_CASE);
+}
+
+function escalateToHighPriority(){
+  const c = CASES[CURRENT_CASE];
+  if(c.priority === 'High') return;
+  c.priority = 'High';
+  c.comments.push({who:'Jordan Reyes', staff:false, avatar:'JR', txt:'Escalated this case to High priority.', when:'Just now'});
+  openCase(CURRENT_CASE);
+  showToast('Case #'+CURRENT_CASE+' escalated to High priority — Tier‑2 notified');
+}
+
+function closeCase(){
+  const c = CASES[CURRENT_CASE];
+  if(c.status === 'Closed') return;
+  c.status = 'Closed';
+  c.journeyStep = 4;
+  c.comments.push({who:'Jordan Reyes', staff:false, avatar:'JR', txt:'Closed this case.', when:'Just now'});
+  openCase(CURRENT_CASE);
+  showToast('Case #'+CURRENT_CASE+' closed');
+}
+
+function openCaseAI(){
+  const c = CASES[CURRENT_CASE];
+  const quick = c.status === 'Resolved' || c.status === 'Closed'
+    ? ['Can you summarize how this was resolved?','How do I reopen this if it happens again?']
+    : ['When will this be resolved?','Is there anything needed from me?'];
+  openAF('Hi! I can see you\'re looking at case #'+CURRENT_CASE+' — '+c.subject+'. What would you like to know?', quick);
+}
+
 function escalateLiveAgent(){
   toggleAF(true);
   afSetContext('live');
+  document.getElementById('af-icon').textContent = '🧑';
+  document.getElementById('af-title').textContent = 'Tier‑2 Support';
+  document.getElementById('af-subtitle').textContent = 'Connecting…';
   afPush('system','Connecting you to Omni‑Channel live agent support...');
-  setTimeout(()=>afPush('bot','Hi Jordan, this is Sam from WebPT Tier‑2 support — I have your case #00234 context in front of me. How can I help?'), 900);
+  setTimeout(()=>{
+    document.getElementById('af-subtitle').textContent = 'Live · Priya, Tier‑2 Support';
+    afPush('bot','Hi Jordan, this is Priya from WebPT Tier‑2 support — I have your case #'+CURRENT_CASE+' context in front of me. How can I help?');
+  }, 900);
 }
 
-/* ---------------- billing ---------------- */
-function openInvoice(num, amt){
-  document.getElementById('inv-title').textContent = 'Invoice '+num;
-  document.getElementById('inv-amt').textContent = amt;
-  document.getElementById('inv-pay-amt').textContent = amt;
+/* ---------------- billing: invoices ---------------- */
+const INVOICES = {
+  'INV-10456': {id:'INV-10456', date:'Jul 1, 2026', amount:1420.00, status:'due', dueDate:'Jul 15, 2026'},
+  'INV-10388': {id:'INV-10388', date:'Jun 1, 2026', amount:2860.00, status:'overdue', dueDate:'Jun 15, 2026'},
+  'INV-10312': {id:'INV-10312', date:'May 1, 2026', amount:2860.00, status:'paid', paidDate:'May 3, 2026', txnId:'TXN-8H2K9QWM', method:'Visa ····6620'},
+  'INV-10245': {id:'INV-10245', date:'Apr 1, 2026', amount:2860.00, status:'paid', paidDate:'Apr 2, 2026', txnId:'TXN-3F7R1LPX', method:'Visa ····6620'}
+};
+const INVOICE_STATUS_CHIP = {due:'chip-bad', overdue:'chip-bad', paid:'chip-good'};
+function invoiceStatusLabel(inv){
+  if(inv.status==='paid') return 'Paid';
+  if(inv.status==='overdue') return 'Overdue';
+  return 'Due '+inv.dueDate;
+}
+function fmtMoney(n){ return '$'+n.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2}); }
+function renderInvoicesList(){
+  const tbody = document.getElementById('invoices-table-body');
+  const rows = Object.values(INVOICES).sort((a,b)=> new Date(b.date) - new Date(a.date));
+  tbody.innerHTML = rows.map(inv => `
+    <tr class="row-click" onclick="openInvoice('${inv.id}')">
+      <td>${inv.id}</td><td>${inv.date}</td><td>${fmtMoney(inv.amount)}</td>
+      <td><span class="chip ${INVOICE_STATUS_CHIP[inv.status]}">${invoiceStatusLabel(inv)}</span></td>
+      <td>→</td>
+    </tr>`).join('');
+}
+let CURRENT_INVOICE = 'INV-10456';
+function openInvoice(id){
+  CURRENT_INVOICE = id;
+  const inv = INVOICES[id];
+  document.getElementById('inv-title').textContent = 'Invoice '+inv.id;
+  document.getElementById('inv-amt').textContent = fmtMoney(inv.amount);
+  renderInvoiceRightPanel(inv);
   activateNav('invoice-detail');
 }
+function renderInvoiceRightPanel(inv){
+  const el = document.getElementById('inv-right-panel');
+  if(inv.status === 'paid'){
+    el.innerHTML = `
+      <div class="card pad" style="margin-bottom:14px;">
+        <h3 style="margin-top:0;font-size:15px;">Payment details</h3>
+        <div class="kv"><div class="k">Status</div><div class="v"><span class="chip chip-good">Paid</span></div></div>
+        <div class="kv"><div class="k">Paid on</div><div class="v">${inv.paidDate}</div></div>
+        <div class="kv"><div class="k">Transaction ID</div><div class="v">${inv.txnId}</div></div>
+        <div class="kv"><div class="k">Payment method</div><div class="v">${inv.method}</div></div>
+        <button class="btn btn-ghost btn-block" style="margin-top:12px;" onclick="showToast('Receipt downloaded')">⬇ Download receipt</button>
+      </div>
+      <div class="card pad">
+        <h3 style="margin-top:0;font-size:15px;">Questions about this invoice?</h3>
+        <p class="muted" style="font-size:12.5px;margin-top:0;">Ask AI can explain charges, compare to prior months, or pull a copy for your records.</p>
+        <button class="btn btn-grad btn-block" onclick="openInvoiceAI()">✨ Ask AI</button>
+      </div>`;
+  } else {
+    const isOverdue = inv.status === 'overdue';
+    el.innerHTML = `
+      <div class="card pad" style="margin-bottom:14px;">
+        <h3 style="margin-top:0;font-size:15px;">Pay this invoice</h3>
+        ${isOverdue ? '<div class="banner banner-warn" style="margin-bottom:14px;"><div>⚠️</div><div>This invoice is overdue. Pay now to avoid service disruption.</div></div>' : ''}
+        <div class="field">
+          <label>Payment method</label>
+          <div class="opt-group" id="inv-pay-method-group">
+            <button type="button" class="opt-btn selected" onclick="selectOpt(this)">Visa ····6620 (default)</button>
+            <button type="button" class="opt-btn" onclick="selectOpt(this)">Business checking ····9021 (ACH)</button>
+          </div>
+        </div>
+        <button class="btn btn-grad btn-block" onclick="payInvoice()">Pay ${fmtMoney(inv.amount)} now</button>
+        <p class="muted" style="font-size:11.5px;margin-top:10px;">Card data is tokenized and stored with the payment gateway — no card numbers are stored in Salesforce (P2‑6).</p>
+      </div>
+      <div class="card pad">
+        <h3 style="margin-top:0;font-size:15px;">Questions about this invoice?</h3>
+        <button class="btn btn-ghost btn-block" onclick="openInvoiceAI()">✨ Ask AI</button>
+      </div>`;
+  }
+}
+function openInvoiceAI(){
+  const inv = INVOICES[CURRENT_INVOICE];
+  const quick = inv.status === 'paid'
+    ? ['Why was this invoice higher than usual?','Can I get a copy for my accountant?','What does the RCM add-on charge cover?']
+    : ['When is this due?','Can I split this into a payment plan?','What happens if I pay late?'];
+  openAF('Happy to help with invoice '+inv.id+'! What would you like to know?', quick);
+}
 function payInvoice(){
+  const inv = INVOICES[CURRENT_INVOICE];
+  const methodBtn = document.querySelector('#inv-pay-method-group .opt-btn.selected');
+  inv.status = 'paid';
+  inv.paidDate = 'Today';
+  inv.txnId = genTxnId();
+  inv.method = methodBtn ? methodBtn.textContent.replace(' (default)','').replace(' (ACH)','') : 'Visa ····6620';
+  renderInvoiceRightPanel(inv);
+  renderInvoicesList();
   showToast('Payment submitted — receipt emailed');
-  setTimeout(()=>activateNav('billing-invoices'), 700);
 }
 
 /* build 12-month schedule */
 (function(){
   const months = ['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'];
   const base = 1420;
-  let html='';
+  const amounts = months.map((m,i)=> base + (i%3===0?230:0));
+  const max = Math.max(...amounts);
+  const total = amounts.reduce((a,b)=>a+b,0);
+  const avg = Math.round(total/amounts.length);
+  const currentIdx = 0;
+
+  document.getElementById('schedule-summary').innerHTML = `
+    <div class="card stat-card"><div class="num">$${total.toLocaleString()}</div><div class="lbl">Total projected, next 12 months</div></div>
+    <div class="card stat-card"><div class="num">$${avg.toLocaleString()}</div><div class="lbl">Average monthly invoice</div></div>
+    <div class="card stat-card"><div class="num">$${amounts[currentIdx].toLocaleString()}</div><div class="lbl">Next payment · ${months[currentIdx]} 1, 2026</div></div>
+  `;
+
+  let chartHtml = '', labelHtml = '';
   months.forEach((m,i)=>{
-    const amt = base + (i%3===0?230:0);
-    const pct = Math.round((amt/1650)*100);
-    html += `<div class="sched-bar-row"><div class="mo">${m} '26</div><div class="sched-bar-track"><div class="sched-bar-fill" style="width:${pct}%;"></div></div><div class="amt">$${amt.toLocaleString()}</div></div>`;
+    const pct = Math.round((amounts[i]/max)*100);
+    const isCurrent = i === currentIdx;
+    chartHtml += `<div class="sched-col${isCurrent?' current':''}"><div class="amt-lbl">$${(amounts[i]/1000).toFixed(2)}k</div><div class="bar" style="height:${pct}%;"></div></div>`;
+    labelHtml += `<div${isCurrent?' class="current"':''}>${m}</div>`;
   });
-  document.getElementById('schedule-list').innerHTML = html;
+  document.getElementById('schedule-chart').innerHTML = chartHtml;
+  document.getElementById('schedule-month-labels').innerHTML = labelHtml;
 })();
 
 /* ---------------- public buy flow state ---------------- */
@@ -1418,8 +1971,11 @@ function startBuy(mode){
 }
 function startSandbox(){ showPublicView('pub-view-sandbox'); }
 function finishSandbox(){
-  showToast('Sandbox request received');
-  showPublicView('pub-view-sandbox-ready');
+  const email = document.getElementById('sb-email').value || 'you@yourclinic.com';
+  showLoaderSequence(['Creating your sandbox account…','Loading sample clinic data…','Almost ready…'], ()=>{
+    document.getElementById('sb-email-confirm').textContent = email;
+    showPublicView('pub-view-sandbox-ready');
+  }, 800);
 }
 function runValidation(){
   const email = document.getElementById('q-email').value;
@@ -1441,14 +1997,45 @@ function runValidation(){
   }, 1000);
 }
 let SELECTED_PLAN = {name:'Enhanced', price:'$1,190'};
+let BILLING_CYCLE = 'monthly';
 function selectPlan(el, name, price){
   document.querySelectorAll('.plan-card').forEach(p=>p.classList.remove('selected'));
   el.classList.add('selected');
   SELECTED_PLAN = {name, price};
 }
+function updateCheckoutTotals(){
+  const monthly = parseInt(SELECTED_PLAN.price.replace(/\D/g,''),10);
+  if(BILLING_CYCLE === 'monthly'){
+    document.getElementById('co-cycle-label').textContent = 'Monthly';
+    document.getElementById('co-total').textContent = '$'+monthly.toLocaleString()+'.00';
+    document.getElementById('co-savings').textContent = '';
+  } else {
+    const yearly = Math.round(monthly*12*0.85);
+    const savings = Math.round(monthly*12 - yearly);
+    document.getElementById('co-cycle-label').textContent = 'Yearly (billed annually)';
+    document.getElementById('co-total').textContent = '$'+yearly.toLocaleString()+'.00';
+    document.getElementById('co-savings').textContent = 'You save $'+savings.toLocaleString()+'/yr vs. monthly billing';
+  }
+}
+function selectBillingCycle(el, cycle){
+  selectOpt(el);
+  BILLING_CYCLE = cycle;
+  updateCheckoutTotals();
+}
+function detectCardBrand(input, badgeId){
+  const digits = input.value.replace(/\D/g,'');
+  const badge = document.getElementById(badgeId);
+  if(!digits){ badge.textContent=''; return; }
+  const map = {'1':'VISA','2':'MASTERCARD','3':'AMEX','4':'DISCOVER'};
+  badge.textContent = map[digits[0]] || '';
+}
 function continueFromPlans(){
   document.getElementById('co-plan').textContent = SELECTED_PLAN.name+' — '+SELECTED_PLAN.price+'/mo';
   document.getElementById('as-plan').textContent = SELECTED_PLAN.name;
+  BILLING_CYCLE = 'monthly';
+  document.querySelectorAll('#co-cycle-group .opt-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelector('#co-cycle-group .opt-btn').classList.add('selected');
+  updateCheckoutTotals();
   const hasStoredCards = (BUY_MODE === 'existing');
   document.getElementById('co-saved-wrap').classList.toggle('hidden', !hasStoredCards);
   document.getElementById('co-new-card-fields').classList.toggle('hidden', hasStoredCards);
@@ -1463,12 +2050,53 @@ function selectCheckoutMethod(el, isNew){
   document.getElementById('co-new-card-fields').classList.toggle('hidden', !isNew);
 }
 function finishPurchase(){
-  showPublicView('pub-view-confirm');
+  showLoaderSequence(['Contacting payment gateway…','Processing payment…'], ()=>{
+    const txn = genTxnId();
+    const amt = document.getElementById('co-total').textContent;
+    document.getElementById('confirm-txn').textContent = txn;
+    document.getElementById('confirm-amount-line').textContent = amt+' charged to your card';
+    document.getElementById('confirm-step-1-sub').textContent = amt+' — payment successful';
+    // reset stepper state each time
+    ['confirm-step-2','confirm-step-3','confirm-step-4'].forEach(id=>{
+      const el = document.getElementById(id);
+      el.querySelector('.mk').style.background = '#cdd4de';
+      el.querySelector('.mk').textContent = '○';
+    });
+    document.getElementById('confirm-nextsteps').classList.add('hidden');
+    document.getElementById('confirm-actions').classList.add('hidden');
+    showPublicView('pub-view-confirm');
+    runProvisioningSequence();
+  }, 900);
+}
+function runProvisioningSequence(){
+  const step2 = document.getElementById('confirm-step-2').querySelector('.mk');
+  const step3 = document.getElementById('confirm-step-3').querySelector('.mk');
+  const step3sub = document.getElementById('confirm-step-3-sub');
+  const step4 = document.getElementById('confirm-step-4').querySelector('.mk');
+  setTimeout(()=>{
+    step2.style.background = 'var(--good)'; step2.textContent = '✓';
+  }, 700);
+  setTimeout(()=>{
+    step3.style.background = 'var(--grad)'; step3.textContent = '●';
+    step3sub.textContent = 'In progress — provisioning your environment now…';
+  }, 1300);
+  setTimeout(()=>{
+    step3.style.background = 'var(--good)'; step3.textContent = '✓';
+    step3sub.textContent = 'Complete';
+  }, 3800);
+  setTimeout(()=>{
+    step4.style.background = 'var(--good)'; step4.textContent = '✓';
+    document.getElementById('confirm-nextsteps').classList.remove('hidden');
+    document.getElementById('confirm-actions').classList.remove('hidden');
+  }, 4400);
 }
 function finishAndGoHome(){
-  document.getElementById('public-app').classList.remove('active');
-  doLogin();
-  showToast('Welcome to your Gen 3 Support Hub');
+  CAME_FROM_MEMBER = false;
+  showLoaderSequence(['Redirecting to WebPT Identity Provider…','Signing you in via SSO…','Loading your Support Hub…'], ()=>{
+    document.getElementById('public-app').classList.remove('active');
+    doLogin();
+    showToast('Welcome to your Gen 3 Support Hub');
+  }, 750);
 }
 
 /* ---------------- Agentforce / live-agent widget ---------------- */
@@ -1481,6 +2109,8 @@ const AF_SCRIPTS = {
 function afSetContext(ctx){
   AF_CONTEXT = ctx;
   const cfg = AF_SCRIPTS[ctx];
+  document.getElementById('af-icon').textContent = '✨';
+  document.getElementById('af-title').textContent = 'Ask AI';
   document.getElementById('af-subtitle').textContent = cfg.subtitle;
   document.getElementById('af-body').innerHTML = '';
   if(ctx!=='live') afPush('bot', cfg.greet);
@@ -1493,18 +2123,64 @@ function afSetContext(ctx){
     q.appendChild(b);
   });
 }
-function openAF(msg){
+function openAF(msg, quickOverride){
   toggleAF(true);
   afSetContext('member');
+  if(quickOverride){
+    const q = document.getElementById('af-quick');
+    q.innerHTML='';
+    quickOverride.forEach(t=>{
+      const b=document.createElement('button');
+      b.textContent=t;
+      b.onclick=()=>{afPush('user',t); respondAF(t);};
+      q.appendChild(b);
+    });
+  }
   setTimeout(()=>afPush('bot', msg), 300);
 }
 function toggleAF(forceOpen){
   const p = document.getElementById('af-panel');
   if(forceOpen){ p.classList.add('open'); return; }
+  const wasOpen = p.classList.contains('open');
   p.classList.toggle('open');
-  if(p.classList.contains('open') && document.getElementById('af-body').children.length===0){
-    afSetContext(document.getElementById('app').classList.contains('active') ? 'member' : 'public');
+  if(!wasOpen && p.classList.contains('open')){
+    const isMember = document.getElementById('app').classList.contains('active');
+    if(document.getElementById('af-body').children.length===0){
+      afSetContext(isMember ? 'member' : 'public');
+    }
+    if(isMember){
+      const activeView = document.querySelector('#app .view.active');
+      if(activeView) refreshAFForPage(activeView.id.replace('view-',''));
+    }
   }
+}
+const PAGE_QUESTIONS = {
+  'dashboard': ['What\'s changed since I last logged in?','Summarize my open cases','Any invoices due soon?'],
+  'cases-list': ['Which case needs my attention most?','How do case priorities work?','How do I escalate a case?'],
+  'billing-invoices': ['Why is this invoice higher than last month?','When is my next payment due?','Can I get a copy of an invoice?'],
+  'billing-methods': ['How do I remove an old card?','Can different orders use different cards?'],
+  'billing-autopay': ['What happens if my card expires?','Can I pause autopay temporarily?'],
+  'billing-plan': ['What\'s included in my subscription?','When does my subscription renew?','What happens if I miss a payment plan installment?'],
+  'billing-schedule': ['Why does one month cost more?','Can I get this for budgeting next year?'],
+  'implementation': ['When does Boulder go live?','Who do I contact about training?'],
+  'upgrade': ['What plans can I add?','How do I add more provider seats?'],
+  'knowledge': ['Where do I find EMR documentation?','How do I contact support?'],
+  'profile': ['How do I update notification preferences?','Who manages my sign-in?']
+};
+function setAFQuick(list){
+  const q = document.getElementById('af-quick');
+  q.innerHTML = '';
+  list.forEach(t=>{
+    const b=document.createElement('button');
+    b.textContent=t;
+    b.onclick=()=>{afPush('user',t); respondAF(t);};
+    q.appendChild(b);
+  });
+}
+function refreshAFForPage(pageKey){
+  if(AF_CONTEXT !== 'member') return;
+  const list = PAGE_QUESTIONS[pageKey];
+  if(list) setAFQuick(list);
 }
 function afPush(who, text){
   const body = document.getElementById('af-body');
@@ -1524,9 +2200,68 @@ function sendAF(){
 }
 function respondAF(text){
   setTimeout(()=>{
-    if(/human|live agent|talk to/i.test(text)){
+    if(/changed since i last logged in/i.test(text)){
+      afPush('bot','Since your last login: case #00234 got a new update from Priya, your June invoice posted, and Denver Clinic reached 62% through implementation.');
+    } else if(/which case needs my attention/i.test(text)){
+      afPush('bot','Case #00229 is marked "Waiting on You" — Marcus needs a confirmation from you on the Boulder login issue. That one\'s worth a look first.');
+    } else if(/priorities work/i.test(text)){
+      afPush('bot','Priority (High/Medium/Low) reflects urgency and is set by your embedded EMR assistant or support team — you can also escalate a case to High yourself from the case detail page.');
+    } else if(/how do i escalate a case/i.test(text)){
+      afPush('bot','Open the case and click "Escalate to High Priority" in the Case Details panel — Tier‑2 is notified immediately.');
+    } else if(/remove an old card/i.test(text)){
+      afPush('bot','On Payment Methods, click "Remove" next to the card. If it\'s currently your autopay method, you\'ll want to set a new default first.');
+    } else if(/different orders use different cards/i.test(text)){
+      afPush('bot','Yes — on Payment Methods you can assign a specific card to a specific order type, like we\'ve done with the RCM add-on using your business checking account.');
+    } else if(/card expires/i.test(text)){
+      afPush('bot','We\'ll show a warning banner here on Autopay once a card is within 60 days of expiring — like the Mastercard ····7710 notice you can see below.');
+    } else if(/pause autopay/i.test(text)){
+      afPush('bot','Yes — toggle "Autopay enrollment" off on this page any time. Invoices will still generate, you\'ll just need to pay them manually until you turn it back on.');
+    } else if(/what.s included in my subscription/i.test(text)){
+      afPush('bot','Depends on the org — Sunrise Rehab Partners is on Gen 3 Enhanced (advanced analytics, priority Tier‑2 support), while Confluent Health – Texas PTS also has the RCM add-on for full billing management.');
+    } else if(/when does my subscription renew/i.test(text)){
+      afPush('bot','Sunrise Rehab Partners renews Mar 1, 2027. Confluent Health – Texas PTS renews Nov 15, 2026 — I can remind you closer to either date.');
+    } else if(/change a payment plan.s card/i.test(text)){
+      afPush('bot','Click "Change payment method" on the plan card for that organization — you can pick any saved method without affecting your other plans.');
+    } else if(/miss a payment/i.test(text)){
+      afPush('bot','We\'ll retry the payment and notify you. Repeated missed payments may pause the plan and revert the remaining balance to standard invoicing.');
+    } else if(/one month cost more/i.test(text)){
+      afPush('bot','Months with the RCM add-on billing cycle show a higher total — that\'s the recurring $230 bump you\'ll see roughly every third month.');
+    } else if(/budgeting next year/i.test(text)){
+      afPush('bot','This 12-month view already covers a rolling year for planning — for a fixed fiscal-year export, let me know and I can point you to Ask AI\'s reporting options.');
+    } else if(/boulder go live/i.test(text)){
+      afPush('bot','Boulder Clinic is scheduled to go live August 4, 2026, right after staff training wraps up.');
+    } else if(/contact about training/i.test(text)){
+      afPush('bot','Your implementation contact handles training scheduling — I can connect you with a live specialist if you\'d like to set up a session.');
+    } else if(/what plans can i add/i.test(text)){
+      afPush('bot','You can add provider seats or upgrade to Enhanced + RCM from the Buy / Add Products page — pricing is pulled live from Revenue Cloud.');
+    } else if(/add more provider seats/i.test(text)){
+      afPush('bot','Head to Buy / Add Products — adding seats routes through the same self-serve flow as new purchases, pre-filled with your account.');
+    } else if(/emr documentation/i.test(text)){
+      afPush('bot','Product documentation lives in your Gen 3 EMR\'s in-product help — Experience Cloud doesn\'t host a separate copy (R6).');
+    } else if(/notification preferences/i.test(text)){
+      afPush('bot','You can toggle case, billing, and product notifications on your Profile page — look for the "Notification preferences" section.');
+    } else if(/manages my sign-in/i.test(text)){
+      afPush('bot','WebPT\'s identity provider manages your sign-in — Support Hub doesn\'t store a separate password (R11). Your Profile page has a link to manage it.');
+    } else if(/schedule a call|schedule a demo/i.test(text)){
+      afPush('bot','Sure thing — opening my calendar for you now.');
+      setTimeout(openDemoModal, 500);
+    } else if(/volume discount/i.test(text)){
+      afPush('bot','At 5+ providers we can usually work in a discount — I\'ll need your provider count and locations to put a number together. Want to hop on a quick call?');
+    } else if(/onboarding/i.test(text)){
+      afPush('bot','Typically 2-3 weeks: kickoff, data migration mapping, staff training, then go-live with hypercare support. Your CSM owns the whole thing end to end.');
+    } else if(/human|live agent|talk to/i.test(text)){
       afPush('system','Escalating to a live agent, preserving this conversation context…');
       setTimeout(()=>afPush('bot', AF_CONTEXT==='public' ? 'Connecting you with a sales specialist now.' : 'Connecting you with Tier‑2 support now.'), 800);
+    } else if(/when will this be resolved/i.test(text)){
+      afPush('bot','Priya on Tier‑2 is updating the eligibility routing rule now — she noted this should resolve within a business day. I\'ll notify you the moment it changes.');
+    } else if(/anything needed from me/i.test(text)){
+      afPush('bot','Nothing right now — this one\'s in Priya\'s hands. I\'ll ping you here if the team needs more detail from you.');
+    } else if(/3 providers/i.test(text)){
+      afPush('bot','With 3 providers and in-house billing, Standard covers what you need — Core EMR + RCM tools, case visibility, and the billing portal, at $690/mo. Enhanced adds analytics and priority support if you want more headroom.');
+    } else if(/8 providers/i.test(text)){
+      afPush('bot','At 8 providers across 2 locations, you\'re just outside self-serve eligibility (under 5, single location) — you\'d be routed to a specialist, and Enhanced + RCM is usually the right starting point for multi-clinic billing complexity.');
+    } else if(/rcm actually include/i.test(text)){
+      afPush('bot','RCM add-on covers claims submission, denial management, and a dedicated CSM watching your collections — it\'s billing handled for you rather than by your own staff.');
     } else if(/plan/i.test(text)){
       afPush('bot','We offer Standard, Enhanced, and Enhanced + RCM, priced by provider count and priced from Revenue Cloud in real time. Want me to open the plan selector?');
     } else if(/qualify/i.test(text)){
@@ -1540,6 +2275,81 @@ function respondAF(text){
     }
   }, 700);
 }
+
+/* ---------------- subscriptions (each may carry its own payment plan) ---------------- */
+const SUBSCRIPTIONS = [
+  {org:'Sunrise Rehab Partners', clinics:'Denver + Boulder', planName:'Gen 3 Enhanced', providers:'7 of 10', billingCycle:'Monthly', price:1190, renewal:'Mar 1, 2027', status:'Active', statusChip:'chip-good',
+    paymentPlan:{active:true, status:'Active — on track', statusChip:'chip-good', original:6000, remaining:2000, installment:1000, next:'Aug 1, 2026', method:'Visa ····6620', paidCount:4, totalCount:6, editingMethod:false}},
+  {org:'Confluent Health – Texas PTS', clinics:'Austin', planName:'Gen 3 Enhanced + RCM', providers:'11 of 15', billingCycle:'Monthly', price:1420, renewal:'Nov 15, 2026', status:'Active', statusChip:'chip-good',
+    paymentPlan:{active:true, status:'Active — on track', statusChip:'chip-good', original:12000, remaining:8000, installment:2000, next:'Aug 5, 2026', method:'Business checking ····9021', paidCount:2, totalCount:6, editingMethod:false}}
+];
+const PLAN_METHODS = ['Visa ····6620','Business checking ····9021'];
+function renderPlansList(){
+  const wrap = document.getElementById('plans-list');
+  wrap.innerHTML = SUBSCRIPTIONS.map((s,i)=>{
+    const pp = s.paymentPlan;
+    let ppHtml = '';
+    if(pp && pp.active){
+      const methodField = pp.editingMethod ? `
+        <div class="field" style="margin-top:10px;">
+          <label>Choose new payment method</label>
+          <div class="opt-group">
+            ${PLAN_METHODS.map(m => `<button type="button" class="opt-btn${m===pp.method?' selected':''}" onclick="selectPlanMethod(${i}, ${JSON.stringify(m).replace(/"/g,'&quot;')})">${m}</button>`).join('')}
+          </div>
+        </div>` : '';
+      ppHtml = `
+        <div class="sub-divider"><span>💳 Payment plan for this subscription</span></div>
+        <div class="kv"><div class="k">Status</div><div class="v"><span class="chip ${pp.statusChip}">${pp.status}</span></div></div>
+        <div class="kv"><div class="k">Original balance</div><div class="v">${fmtMoney(pp.original)}</div></div>
+        <div class="kv"><div class="k">Remaining balance</div><div class="v">${fmtMoney(pp.remaining)}</div></div>
+        <div class="kv"><div class="k">Installment</div><div class="v">${fmtMoney(pp.installment)} / month</div></div>
+        <div class="kv"><div class="k">Next payment</div><div class="v">${pp.next} · ${pp.method}</div></div>
+        <div class="kv"><div class="k">Payments remaining</div><div class="v">${pp.totalCount - pp.paidCount} of ${pp.totalCount}</div></div>
+        ${methodField}
+        <div class="grid-2" style="grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+          <button class="btn btn-ghost" onclick="togglePlanMethodEdit(${i})">${pp.editingMethod ? 'Cancel edit' : '💳 Change payment method'}</button>
+          <button class="btn btn-ghost" style="color:var(--bad);border-color:#f3c9cf;" onclick="cancelPlan(${i})">✕ Cancel plan</button>
+        </div>`;
+    } else if(pp && !pp.active){
+      ppHtml = `
+        <div class="sub-divider"><span>💳 Payment plan for this subscription</span></div>
+        <div class="kv"><div class="k">Status</div><div class="v"><span class="chip chip-closed">Cancelled</span></div></div>
+        <p class="muted" style="font-size:12px;margin:6px 0 0;">This payment plan was cancelled. The remaining balance reverts to standard monthly invoicing.</p>`;
+    } else {
+      ppHtml = `<div class="sub-divider"><span>💳 Payment</span></div><p class="muted" style="font-size:12.5px;margin:0;">Billed automatically each cycle — no installment plan on this subscription.</p>`;
+    }
+    return `<div class="card pad" style="margin-bottom:16px;max-width:640px;">
+      <div class="kv"><div class="k"><b>${s.org}</b></div><div class="v"><span class="chip ${s.statusChip}">${s.status}</span></div></div>
+      <div class="kv"><div class="k">Subscription</div><div class="v">${s.planName}</div></div>
+      <div class="kv"><div class="k">Clinics</div><div class="v">${s.clinics}</div></div>
+      <div class="kv"><div class="k">Providers licensed</div><div class="v">${s.providers}</div></div>
+      <div class="kv"><div class="k">Billing cycle</div><div class="v">${s.billingCycle} · ${fmtMoney(s.price)}/mo</div></div>
+      <div class="kv"><div class="k">Renews</div><div class="v">${s.renewal}</div></div>
+      ${ppHtml}
+    </div>`;
+  }).join('');
+}
+function togglePlanMethodEdit(i){
+  SUBSCRIPTIONS[i].paymentPlan.editingMethod = !SUBSCRIPTIONS[i].paymentPlan.editingMethod;
+  renderPlansList();
+}
+function selectPlanMethod(i, method){
+  SUBSCRIPTIONS[i].paymentPlan.method = method;
+  SUBSCRIPTIONS[i].paymentPlan.editingMethod = false;
+  renderPlansList();
+  showToast('Payment method updated for '+SUBSCRIPTIONS[i].org);
+}
+function cancelPlan(i){
+  SUBSCRIPTIONS[i].paymentPlan.active = false;
+  renderPlansList();
+  showToast('Payment plan cancelled for '+SUBSCRIPTIONS[i].org);
+}
+
+/* ---------------- default entry state: unauthenticated public site, not login ---------------- */
+renderCasesList();
+renderInvoicesList();
+renderPlansList();
+goPublic();
 </script>
 </body>
 </html>
