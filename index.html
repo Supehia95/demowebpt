@@ -1576,20 +1576,12 @@ function openDemoModal(){
   const card = modal.querySelector('.modal-card');
   card.querySelectorAll('.modal-fallback').forEach(n=>n.remove());
   iframe.classList.remove('hidden');
-  iframe.src = 'https://scheduler.zoom.us/sandeep-supehia/demo';
+ 
   modal.classList.remove('hidden');
-  clearTimeout(demoLoadTimer);
+   
   let loaded = false;
   iframe.onload = ()=>{ loaded = true; };
-  demoLoadTimer = setTimeout(()=>{
-    if(!loaded){
-      iframe.classList.add('hidden');
-      const fb = document.createElement('div');
-      fb.className = 'modal-fallback';
-      fb.innerHTML = '<div style="font-size:32px;">📅</div><div><b>This scheduler can\'t be embedded here</b><div class="muted" style="font-size:12.5px;margin-top:4px;">Some booking pages block embedding for security. Open it directly instead.</div></div><a class="btn btn-grad" href="https://scheduler.zoom.us/sandeep-supehia/demo" target="_blank" rel="noopener">Open scheduler in new tab ↗</a>';
-      card.appendChild(fb);
-    }
-  }, 3500);
+   
 }
 function closeModal(id){
   document.getElementById(id).classList.add('hidden');
